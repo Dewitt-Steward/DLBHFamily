@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+
+  "required_fields": {
+    "step1": ["zip"],
+
+    "step2": [
+      "first_name",
+      "last_name",
+      "date_of_birth",
+      "address"
+    ],
+
+    "step3": ["marital_status"],
+
+    "step4": ["dependent_question"]
+  },
+
+  "steps": {
+    "step1": {
+      "fields": ["zip"],
+      "rules": {
+        "zip_required": true,
+        "zip_must_exist_in_zip_classification": true
+      }
+    },
+
+    "step2": {
+      "fields": [
+        "title", "first_name", "middle_name", "last_name",
+        "suffix", "address", "email", "phone", "date_of_birth",
+        "city", "county", "county_fips",
+        "region", "division", "state", "state_fips", "zip"
+      ],
+      "required_fields": ["first_name", "last_name", "date_of_birth", "address"],
+      "prefilled_fields": [
+        "city", "county", "county_fips", "region", "division", "state", "state_fips", "zip"
+      ]
+    },
+
+    "step3": {
+      "fields": ["marital_status"],
+      "required_fields": ["marital_status"]
+    },
+
+    "step4": {
+      "fields": ["dependent_question", "dependent_count"],
+      "required_fields": ["dependent_question"]
+    }
+  }
+}

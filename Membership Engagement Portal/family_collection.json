@@ -7,7 +7,7 @@
       "label": "T-Shirt Size",
       "type": "select",
       "options": [
-        { "value": "", "label": "Select Size" },
+        { "value": "", "label": "Select" },
         { "value": "XS", "label": "Extra Small (XS)", "price": 10.00 },
         { "value": "S",  "label": "Small (S)",       "price": 10.00 },
         { "value": "M",  "label": "Medium (M)",      "price": 10.00 },

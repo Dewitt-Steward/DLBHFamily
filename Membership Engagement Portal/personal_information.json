@@ -1,0 +1,53 @@
+{
+  "section": "Personal Information",
+  "description": "Tell us a little about yourself.",
+  "fields": [
+    {
+      "id": "title",
+      "label": "Title",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "Select" },
+        { "value": "Mr", "label": "Mr." },
+        { "value": "Mrs", "label": "Mrs." },
+        { "value": "Ms", "label": "Ms." },
+        { "value": "Miss", "label": "Miss" }
+      ]
+    },
+    {
+      "id": "first_name",
+      "label": "First Name",
+      "type": "text"
+    },
+    {
+      "id": "middle_name",
+      "label": "Middle Name",
+      "type": "text"
+    },
+    {
+      "id": "last_name",
+      "label": "Last Name",
+      "type": "text"
+    },
+    {
+      "id": "suffix",
+      "label": "Suffix",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "Select" },
+        { "value": "Jr", "label": "Jr." },
+        { "value": "Sr", "label": "Sr." },
+        { "value": "I", "label": "I" },
+        { "value": "II", "label": "II" },
+        { "value": "III", "label": "III" },
+        { "value": "IV", "label": "IV" },
+        { "value": "V", "label": "V" }
+      ]
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date"
+    }
+  ]
+}

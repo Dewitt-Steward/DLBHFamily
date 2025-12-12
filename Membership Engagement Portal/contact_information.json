@@ -23,6 +23,11 @@
       "type": "text"
     },
     {
+      "id": "region",
+      "label": "Region",
+      "type": "text"
+    },    
+    {
       "id": "state",
       "label": "State",
       "type": "text"

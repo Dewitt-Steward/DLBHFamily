@@ -17,7 +17,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const id = prefix ? `${prefix}_${field.id}` : field.id;
 
         if (field.display_only) {
-            return `<div><strong>${field.label}:</strong> ${formData[field.id] || ""}</div>`;
+            return `
+                <div class="u-mB2">
+                    <strong>${field.label}:</strong>
+                    <span>${formData[field.id] || ""}</span>
+                </div>
+            `;
         }
 
         if (field.type === "select") {
@@ -26,17 +31,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .join("");
 
             return `
-                <label>${field.label}</label>
-                <select id="${id}">
-                    <option value="">Select</option>
-                    ${options}
-                </select>
+                <div class="u-mB4">
+                    <label class="u-textLeft">${field.label}</label>
+                    <select id="${id}" class="u-pA2 radius-small">
+                        <option value="">Select</option>
+                        ${options}
+                    </select>
+                </div>
             `;
         }
 
         return `
-            <label>${field.label}</label>
-            <input type="${field.type}" id="${id}">
+            <div class="u-mB4">
+                <label class="u-textLeft">${field.label}</label>
+                <input type="${field.type}" id="${id}" class="u-pA2 radius-small">
+            </div>
         `;
     }
 
@@ -44,8 +53,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         const screen = config.screens[currentScreenIndex];
 
         let html = `
-            <h2>${screen.title}</h2>
-            <p>${screen.description || ""}</p>
+            <div class="Container u-pA4">
+
+                <h2 class="u-textCenter u-mB2">${screen.title}</h2>
+                <p class="u-textCenter u-mB6">${screen.description || ""}</p>
         `;
 
         screen.sections.forEach(section => {
@@ -55,28 +66,47 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (formData[k] !== v) return;
             }
 
-            html += `<div><h3>${section.title || ""}</h3>`;
+            html += `
+                <div class="Grid u-mB6">
+                    <div class="Grid-cell--center">
+                        ${section.title ? `<h3 class="u-mB4">${section.title}</h3>` : ""}
+            `;
 
             if (section.repeat_for) {
                 const count = parseInt(formData[section.repeat_for] || 0);
+
                 for (let i = 0; i < count; i++) {
+                    html += `<div class="u-mB6">`;
                     section.fields.forEach(f => {
                         html += renderField(f, `${section.repeat_for}${i}`);
                     });
+                    html += `</div>`;
                 }
+
             } else {
                 section.fields.forEach(f => {
                     html += renderField(f);
                 });
             }
 
-            html += `</div>`;
+            html += `
+                    </div>
+                </div>
+            `;
         });
 
         html += `
-            <div style="margin-top:20px;">
-                ${currentScreenIndex > 0 ? `<button id="mep-back">Back</button>` : ""}
-                ${currentScreenIndex < config.screens.length - 1 ? `<button id="mep-next">Next</button>` : ""}
+            <div class="Grid Grid--alignCenter u-mT6">
+                ${currentScreenIndex > 0
+                    ? `<button id="mep-back" class="u-pA2 radius-small u-mR2">Back</button>`
+                    : ""
+                }
+                ${currentScreenIndex < config.screens.length - 1
+                    ? `<button id="mep-next" class="u-pA2 radius-small">Next</button>`
+                    : ""
+                }
+            </div>
+
             </div>
         `;
 

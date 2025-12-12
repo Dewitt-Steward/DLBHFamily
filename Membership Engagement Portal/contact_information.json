@@ -1,0 +1,51 @@
+{
+  "section": "Contact Information",
+  "description": "Provide your primary contact and residence details.",
+  "fields": [
+    {
+      "id": "address",
+      "label": "Address",
+      "type": "text"
+    },
+    {
+      "id": "city",
+      "label": "City",
+      "type": "text"
+    },
+    {
+      "id": "county",
+      "label": "County",
+      "type": "text"
+    },
+    {
+      "id": "county_fips_code",
+      "label": "County FIPS Code",
+      "type": "text"
+    },
+    {
+      "id": "state",
+      "label": "State",
+      "type": "text"
+    },
+    {
+      "id": "state_fips_code",
+      "label": "State FIPS Code",
+      "type": "text"
+    },
+    {
+      "id": "zip_code",
+      "label": "Zip Code",
+      "type": "text"
+    },
+    {
+      "id": "email_address",
+      "label": "Email Address",
+      "type": "email"
+    },
+    {
+      "id": "phone_number",
+      "label": "Phone Number",
+      "type": "text"
+    }
+  ]
+}

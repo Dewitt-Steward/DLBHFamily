@@ -1,0 +1,237 @@
+{
+  "version": "1.0",
+
+  "screens": [
+
+    {
+      "id": "step1_zip",
+      "title": "Membership Enrollment Portal",
+      "description": "Please enter your zip code to begin.",
+      "auto_advance": true,
+      "sections": [
+        {
+          "title": "Start",
+          "fields": [
+            {
+              "id": "zip_code",
+              "label": "ZIP Code",
+              "type": "text",
+              "max_length": 5,
+              "validation": "zip_lookup"
+            }
+          ]
+        }
+      ],
+      "next_screen": "step2_personal_contact"
+    },
+
+    {
+      "id": "step2_personal_contact",
+      "title": "Personal Information",
+      "description": "Tell us a little bit about yourself.",
+      "auto_advance": false,
+
+      "sections": [
+        {
+          "title": "Personal Information",
+          "fields": [
+            { "id": "title", "label": "Title", "type": "select",
+              "options": ["Mr.", "Ms.", "Mrs.", "Dr."] },
+
+            { "id": "first_name", "label": "First Name", "type": "text" },
+
+            { "id": "middle_name", "label": "Middle Name", "type": "text" },
+
+            { "id": "last_name", "label": "Last Name", "type": "text" },
+
+            { "id": "suffix", "label": "Suffix", "type": "select",
+              "options": ["Jr.", "Sr.", "II", "III", "IV"] },
+
+            { "id": "dob", "label": "Date of Birth", "type": "date",
+              "validation": "age_19" }
+          ]
+        },
+
+        {
+          "title": "Contact Information",
+          "description": "Tell us the best way to contact you.",
+          "fields": [
+            { "id": "address", "label": "Address", "type": "text" },
+
+            { "id": "city", "label": "City", "type": "text", "locked": true,
+              "prefill": "zip_lookup" },
+
+            { "id": "county", "label": "County", "type": "text", "locked": true,
+              "prefill": "zip_lookup" },
+
+            { "id": "county_fips", "label": "County FIPS Code", "type": "text",
+              "locked": true, "prefill": "zip_lookup" },
+
+            { "id": "region", "label": "Region", "type": "text",
+              "locked": true, "prefill": "zip_lookup" },
+
+            { "id": "division", "label": "Division", "type": "text",
+              "locked": true, "prefill": "zip_lookup" },
+
+            { "id": "state", "label": "State", "type": "text", "locked": true,
+              "prefill": "zip_lookup" },
+
+            { "id": "state_fips", "label": "State FIPS Code", "type": "text",
+              "locked": true, "prefill": "zip_lookup" },
+
+            { "id": "zip_output", "label": "ZIP Code", "type": "text",
+              "locked": true, "prefill": "zip_lookup" },
+
+            { "id": "email", "label": "Email Address", "type": "email" },
+
+            { "id": "phone", "label": "Phone Number", "type": "text",
+              "validation": "us_area_code" }
+          ]
+        }
+      ],
+
+      "next_screen": "step3_marital"
+    },
+
+    {
+      "id": "step3_marital",
+      "title": "Marital Status",
+      "description": "Are you married?",
+      "sections": [
+        {
+          "fields": [
+            {
+              "id": "marital_status",
+              "label": "Marital Status",
+              "type": "select",
+              "options": ["Single", "Married"]
+            }
+          ]
+        }
+      ],
+      "next_screen": "step4_dependents"
+    },
+
+    {
+      "id": "step4_dependents",
+      "title": "Dependents",
+      "description": "Do you have any dependents? (18 years of age or younger)",
+      "sections": [
+        {
+          "fields": [
+            {
+              "id": "dependent_count",
+              "label": "Number of Dependents",
+              "type": "select",
+              "options": ["0","1","2","3","4","5","6","7","8","9","10"]
+            }
+          ]
+        }
+      ],
+      "next_screen": "step4b_household"
+    },
+
+    {
+      "id": "step4b_household",
+      "title": "Household Personal Information",
+      "description": "Tell us a little bit about your family.",
+      "sections": [
+        {
+          "title": "Spouse / Partner",
+          "visible_if": { "marital_status": "Married" },
+
+          "fields": [
+            { "id": "spouse_title", "label": "Title", "type": "select",
+              "options": ["Mr.", "Ms.", "Mrs.", "Dr."] },
+
+            { "id": "spouse_first", "label": "First Name", "type": "text" },
+
+            { "id": "spouse_last", "label": "Last Name", "type": "text" },
+
+            { "id": "spouse_dob", "label": "Date of Birth", "type": "date",
+              "validation": "age_19" }
+          ]
+        },
+
+        {
+          "title": "Dependents",
+          "repeat_for": "dependent_count",
+
+          "fields": [
+            { "id": "dep_first", "label": "First Name", "type": "text" },
+            { "id": "dep_last", "label": "Last Name", "type": "text" },
+            { "id": "dep_dob", "label": "Date of Birth", "type": "date",
+              "validation": "age_18_or_under" }
+          ]
+        }
+      ],
+      "next_screen": "step5_collection"
+    },
+
+    {
+      "id": "step5_collection",
+      "title": "Family Collection",
+      "description": "Let us know your T-shirt size for your Family Reunion gear.",
+      "sections": [
+        {
+          "fields": [
+            {
+              "id": "shirt_size",
+              "label": "Household T-Shirt Size",
+              "type": "select",
+              "options_source": "family_collection.json"
+            }
+          ]
+        }
+      ],
+      "next_screen": "step6_cart"
+    },
+
+    {
+      "id": "step6_cart",
+      "title": "Cart",
+      "description": "Review your household details.",
+
+      "sections": [
+        {
+          "title": "Location",
+          "fields": [
+            { "id": "region", "label": "Region", "display_only": true },
+            { "id": "division", "label": "Division", "display_only": true },
+            { "id": "state_fips", "label": "State FIPS Code", "display_only": true },
+            { "id": "county_fips", "label": "County FIPS Code", "display_only": true }
+          ]
+        },
+
+        {
+          "title": "Household Summary",
+          "fields": [
+            { "id": "family_name", "label": "The Last Name Family", "display_only": true },
+            { "id": "full_address", "label": "Address", "display_only": true },
+            { "id": "email", "label": "Email", "display_only": true },
+            { "id": "phone", "label": "Phone", "display_only": true }
+          ]
+        },
+
+        {
+          "title": "Household Members",
+          "repeat_for": "household",
+          "fields": [
+            { "id": "member_name", "label": "Name", "display_only": true },
+            { "id": "member_dob", "label": "DOB", "display_only": true },
+            { "id": "shirt_size", "label": "T-Shirt Size", "display_only": true }
+          ]
+        },
+
+        {
+          "title": "Membership Summary",
+          "fields": [
+            { "id": "membership_line", "label": "Membership Fee", "display_only": true },
+            { "id": "dues_line", "label": "Dues", "display_only": true },
+            { "id": "shirt_line", "label": "T-Shirt Cost", "display_only": true }
+          ]
+        }
+      ]
+    }
+  ]
+}

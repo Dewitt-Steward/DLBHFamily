@@ -1,10 +1,14 @@
-document.addEventListener("DOMContentLoaded", async function () {
+(async function waitForMEP() {
+
+    const container = document.getElementById("mep");
+
+    if (!container) {
+        setTimeout(waitForMEP, 50);
+        return;
+    }
 
     const CONFIG_URL =
         "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/Membership%20Engagement%20Portal/Configuration.json";
-
-    const container = document.getElementById("mep");
-    if (!container) return;
 
     const config = await fetch(CONFIG_URL).then(r => r.json());
 
@@ -100,4 +104,4 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     renderScreen();
 
-});
+})();

@@ -1,9 +1,9 @@
 {
   "section": "Dependent Information",
-  "description": "Provide information for your spouse or partner and any dependents.",
+  "description": "Provide information for a dependent.",
   "fields": [
     {
-      "id": "spouse_partner_title",
+      "id": "dependent_title",
       "label": "Title",
       "type": "select",
       "options": [
@@ -13,21 +13,6 @@
         { "value": "Ms", "label": "Ms." },
         { "value": "Miss", "label": "Miss" }
       ]
-    },
-    {
-      "id": "spouse_partner_first_name",
-      "label": "First Name",
-      "type": "text"
-    },
-    {
-      "id": "spouse_partner_last_name",
-      "label": "Last Name",
-      "type": "text"
-    },
-    {
-      "id": "spouse_partner_date_of_birth",
-      "label": "Date of Birth",
-      "type": "date"
     },
     {
       "id": "dependent_first_name",
@@ -43,6 +28,20 @@
       "id": "dependent_date_of_birth",
       "label": "Date of Birth",
       "type": "date"
+    },
+    {
+      "id": "dependent_relationship",
+      "label": "Relationship",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "Select" },
+        { "value": "Spouse", "label": "Spouse" },
+        { "value": "Partner", "label": "Partner" },
+        { "value": "Child", "label": "Child" },
+        { "value": "Stepchild", "label": "Stepchild" },
+        { "value": "Grandchild", "label": "Grandchild" },
+        { "value": "Other", "label": "Other" }
+      ]
     }
   ]
 }

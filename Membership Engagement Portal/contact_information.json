@@ -38,9 +38,9 @@
       "type": "text"
     },
     {
-      "id": "zip_code",
+      "id": "contact_zip_code",
       "label": "Zip Code",
-      "type": "text"
+      "type": "zip_code"
     },
     {
       "id": "email_address",

@@ -1,6 +1,6 @@
 {
   "section": "Membership Enrollment Portal",
-  "description": "Please enter your Zip Code to begin your Membership Enrollment.",
+  "description": "Please enter your Zip Code to begin your Membership Enrollment Tamika.",
   "fields": [
     {
       "id": "zip_code",

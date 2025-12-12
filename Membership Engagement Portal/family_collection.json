@@ -1,0 +1,21 @@
+{
+  "section": "Family Collection",
+  "description": "Select your family collection items.",
+  "fields": [
+    {
+      "id": "tshirt_size",
+      "label": "T-Shirt Size",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "Select Size" },
+        { "value": "XS", "label": "Extra Small (XS)", "price": 10.00 },
+        { "value": "S",  "label": "Small (S)",       "price": 10.00 },
+        { "value": "M",  "label": "Medium (M)",      "price": 10.00 },
+        { "value": "L",  "label": "Large (L)",       "price": 10.00 },
+        { "value": "XL", "label": "Extra Large (XL)", "price": 10.00 },
+        { "value": "XXL","label": "2X Large (XXL)",  "price": 10.00 },
+        { "value": "XXXL","label": "3X Large (XXXL)","price": 10.00 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "section": "Membership Enrollment Portal",
+  "description": "",
+  "fields": [
+    {
+      "id": "zip_code",
+      "label": "Zip Code",
+      "type": "text"
+    }
+  ]
+}

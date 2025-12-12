@@ -40,7 +40,7 @@
     {
       "id": "contact_zip_code",
       "label": "Zip Code",
-      "type": "zip_code"
+      "type": "text"
     },
     {
       "id": "email_address",

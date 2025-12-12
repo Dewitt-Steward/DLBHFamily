@@ -1,15 +1,15 @@
-(async function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     const CONFIG_URL =
         "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/Membership%20Engagement%20Portal/Configuration.json";
+
+    const container = document.getElementById("mep");
+    if (!container) return;
 
     const config = await fetch(CONFIG_URL).then(r => r.json());
 
     let currentScreenIndex = 0;
     let formData = {};
-
-    const container = document.getElementById("mep");
-    if (!container) return;
 
     function renderField(field, prefix = "") {
         const id = prefix ? `${prefix}_${field.id}` : field.id;
@@ -86,12 +86,18 @@
         });
 
         const back = document.getElementById("mep-back");
-        if (back) back.onclick = () => { currentScreenIndex--; renderScreen(); };
+        if (back) back.onclick = () => {
+            currentScreenIndex--;
+            renderScreen();
+        };
 
         const next = document.getElementById("mep-next");
-        if (next) next.onclick = () => { currentScreenIndex++; renderScreen(); };
+        if (next) next.onclick = () => {
+            currentScreenIndex++;
+            renderScreen();
+        };
     }
 
     renderScreen();
 
-})();
+});

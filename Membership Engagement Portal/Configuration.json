@@ -179,7 +179,11 @@
               "id": "shirt_size",
               "label": "Household T-Shirt Size",
               "type": "select",
-              "options_source": "family_collection.json"
+              "options": [
+                "Youth XS", "Youth S", "Youth M", "Youth L", "Youth XL",
+                "Adult S", "Adult M", "Adult L", "Adult XL",
+                "2XL", "3XL", "4XL", "5XL"
+              ]
             }
           ]
         }

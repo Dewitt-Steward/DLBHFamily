@@ -1,3 +1,5 @@
+console.log("MEP Engine loaded");
+
 document.addEventListener("DOMContentLoaded", async function () {
 
     const container = document.getElementById("mep");

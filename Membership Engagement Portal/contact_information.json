@@ -38,7 +38,7 @@
       "type": "text"
     },
     {
-      "id": "contact_zip_code",
+      "id": "Zip_Code",
       "label": "Zip Code",
       "type": "text"
     },

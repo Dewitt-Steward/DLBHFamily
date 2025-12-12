@@ -3,7 +3,7 @@
   "description": "Please enter your Zip Code to begin your Membership Enrollment.",
   "fields": [
     {
-      "id": "zip_code",
+      "id": "Zip_Code",
       "label": "Zip Code",
       "type": "text"
     }

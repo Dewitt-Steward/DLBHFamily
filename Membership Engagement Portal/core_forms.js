@@ -1,15 +1,14 @@
 (function () {
-  // Always fetch Geography from CDN first (most reliable in browsers)
+  // Geography source: CDN first, raw fallback
   const GEO_URLS = [
     "https://cdn.jsdelivr.net/gh/Dewitt-Steward/DLBHFamily@main/Membership%20Engagement%20Portal/Geography.json",
     "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/Membership%20Engagement%20Portal/Geography.json"
   ];
 
-  const VERSION = "zipgate-1.0.0";
+  const VERSION = "zipgate-1.0.1";
   window.DLBH_CORE_FORMS_VERSION = VERSION;
 
   let zipSetPromise = null;
-  let step1ZipIsValid = false;
 
   function normalizeZip(input) {
     const s = String(input ?? "").trim();
@@ -23,11 +22,9 @@
     return res.json();
   }
 
-  // Extract ZIPs from ANY JSON shape by scanning recursively for 5-digit patterns
+  // Robust: find ZIPs anywhere in the JSON by scanning values for 5 digits
   function collectZipsDeep(value, set, depth = 0) {
-    if (depth > 20) return;
-
-    if (value == null) return;
+    if (depth > 20 || value == null) return;
 
     if (typeof value === "string" || typeof value === "number") {
       const z = normalizeZip(value);
@@ -92,6 +89,10 @@
   }
 
   function initMultistep(form) {
+    // prevent double-init
+    if (form.dataset.dlbhInit === "1") return;
+    form.dataset.dlbhInit = "1";
+
     const steps = Array.from(form.querySelectorAll(".dlbh-step"));
     if (!steps.length) return;
 
@@ -105,95 +106,97 @@
       steps[pos].scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // Stop Enter from submitting the form and adding ?zip_code=... to the URL
+    // Stop Enter from submitting the form (prevents ?zip_code=... refresh behavior)
     form.addEventListener("keydown", (e) => {
       if (e.key === "Enter") e.preventDefault();
     });
 
+    // Step 1 pieces
     const step1 = form.querySelector('.dlbh-step[data-step-index="1"]') || steps[0];
     const zipInput = step1 ? step1.querySelector("#zip_code") : null;
-    const nextBtn = step1 ? step1.querySelector(".dlbh-next") : null;
-
+    const step1NextBtn = step1 ? step1.querySelector(".dlbh-next") : null;
     const errEl = zipInput ? ensureZipErrorEl(zipInput) : null;
 
-    // Default: Next disabled until valid
-    if (nextBtn) setBtnDisabled(nextBtn, true);
-
     async function validateZip() {
-      if (!zipInput || !nextBtn || !errEl) return;
+      if (!zipInput || !errEl || !step1NextBtn) return false;
 
       const raw = String(zipInput.value || "").trim();
 
+      // blank -> disabled, no error
       if (!raw) {
-        step1ZipIsValid = false;
-        setBtnDisabled(nextBtn, true);
+        setBtnDisabled(step1NextBtn, true);
         errEl.textContent = "";
-        return;
+        return false;
       }
 
       const z = normalizeZip(raw);
 
-      // still typing (not 5 digits yet)
+      // not 5 digits yet -> disabled, no error
       if (!z) {
-        step1ZipIsValid = false;
-        setBtnDisabled(nextBtn, true);
+        setBtnDisabled(step1NextBtn, true);
         errEl.textContent = "";
-        return;
+        return false;
       }
 
+      // load + validate
       try {
         errEl.textContent = "Checking Zip Code...";
+        setBtnDisabled(step1NextBtn, true);
+
         const set = await loadZipSet();
-
         if (set.has(z)) {
-          step1ZipIsValid = true;
-          setBtnDisabled(nextBtn, false);
           errEl.textContent = "";
+          setBtnDisabled(step1NextBtn, false);
 
-          // OPTIONAL: copy ZIP into Step 2 if you created primary_zip_code
+          // optional: copy into Step 2 if you added primary_zip_code
           const step2Zip = form.querySelector("#primary_zip_code");
           if (step2Zip && !step2Zip.value) step2Zip.value = z;
 
+          return true;
         } else {
-          step1ZipIsValid = false;
-          setBtnDisabled(nextBtn, true);
           errEl.textContent = "Invalid Zip Code.";
+          setBtnDisabled(step1NextBtn, true);
+          return false;
         }
       } catch (e) {
-        step1ZipIsValid = false;
-        setBtnDisabled(nextBtn, true);
         errEl.textContent = "Zip lookup unavailable. Please refresh and try again.";
+        setBtnDisabled(step1NextBtn, true);
+        return false;
       }
     }
 
+    // Start: disable Next on Step 1 until valid
+    if (step1NextBtn) setBtnDisabled(step1NextBtn, true);
     if (zipInput) {
-      zipInput.addEventListener("input", validateZip);
-      zipInput.addEventListener("blur", validateZip);
+      zipInput.addEventListener("input", () => validateZip());
+      zipInput.addEventListener("blur", () => validateZip());
       validateZip();
     }
 
-    // Gate Next click on Step 1 no matter what
-    form.addEventListener("click", (e) => {
+    // ONE click handler controls navigation (this is the key fix)
+    form.addEventListener("click", async (e) => {
       const next = e.target.closest(".dlbh-next");
       const prev = e.target.closest(".dlbh-prev");
-
-      if (next) {
-        const currentStep = steps[pos];
-        const stepIndex = currentStep?.getAttribute("data-step-index");
-
-        if (String(stepIndex) === "1" && !step1ZipIsValid) {
-          e.preventDefault();
-          validateZip(); // forces message
-          return;
-        }
-
-        e.preventDefault();
-        show(pos + 1);
-      }
 
       if (prev) {
         e.preventDefault();
         show(pos - 1);
+        return;
+      }
+
+      if (next) {
+        e.preventDefault();
+
+        const currentStep = steps[pos];
+        const stepIndex = String(currentStep?.getAttribute("data-step-index") || "");
+
+        // Gate Step 1
+        if (stepIndex === "1") {
+          const ok = await validateZip();
+          if (!ok) return; // stay on step 1
+        }
+
+        show(pos + 1);
       }
     });
 

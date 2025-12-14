@@ -41,7 +41,6 @@
   "fields": [
     { "id": "zip_code", "name": "zip_code", "label": "Zip Code", "type": "text", "steps": [1] },
 
-    { "id": "primary_zip_code", "name": "primary[zip_code]", "label": "Zip Code", "type": "text", "steps": [2] },
     { "id": "title", "name": "primary[title]", "label": "Title", "type": "select", "options_dataset": "title_options", "steps": [2] },
     { "id": "first_name", "name": "primary[first_name]", "label": "First Name", "type": "text", "steps": [2] },
     { "id": "middle_name", "name": "primary[middle_name]", "label": "Middle Name", "type": "text", "steps": [2] },
@@ -52,6 +51,7 @@
     { "id": "address", "name": "primary[address]", "label": "Address", "type": "text", "steps": [2] },
     { "id": "city", "name": "primary[city]", "label": "City", "type": "text", "steps": [2] },
     { "id": "state", "name": "primary[state]", "label": "State", "type": "text", "steps": [2] },
+    { "id": "primary_zip_code", "name": "primary[zip_code]", "label": "Zip Code", "type": "text", "steps": [2] },
 
     { "id": "email", "name": "primary[email]", "label": "Email Address", "type": "email", "steps": [2] },
     { "id": "phone", "name": "primary[phone]", "label": "Phone Number", "type": "tel", "steps": [2] },

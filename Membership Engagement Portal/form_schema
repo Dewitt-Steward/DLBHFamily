@@ -1,0 +1,54 @@
+{
+  "form_name": "Membership Enrollment",
+  "version": "1.0",
+  "datasets": {
+    "title_options": [
+      { "value": "mr", "label": "Mr." },
+      { "value": "mrs", "label": "Mrs." },
+      { "value": "ms", "label": "Ms." },
+      { "value": "miss", "label": "Miss" },
+      { "value": "dr", "label": "Dr." },
+      { "value": "rev", "label": "Rev." },
+      { "value": "none", "label": "None" }
+    ],
+    "relationship_options": [
+      { "value": "self", "label": "Self" },
+      { "value": "spouse_partner", "label": "Spouse / Partner" },
+      { "value": "dependent", "label": "Dependent" }
+    ],
+    "tshirt_size_options": [
+      { "value": "S", "label": "Small", "price": 10.0 },
+      { "value": "M", "label": "Medium", "price": 10.0 },
+      { "value": "L", "label": "Large", "price": 10.0 },
+      { "value": "XL", "label": "XL", "price": 10.0 },
+      { "value": "2XL", "label": "2XL", "price": 10.0 },
+      { "value": "3XL", "label": "3XL", "price": 10.0 },
+      { "value": "4XL", "label": "4XL", "price": 10.0 },
+      { "value": "5XL", "label": "5XL", "price": 10.0 }
+    ],
+    "discount_code_options": [
+      { "value": "DLBHFamily", "label": "DLBHFamily", "amount": 10.0 },
+      { "value": "DLBHFO", "label": "DLBHFO", "amount": 5.0 }
+    ]
+  },
+  "fields": [
+    { "id": "title", "label": "Title", "type": "select", "options_dataset": "title_options" },
+    { "id": "first_name", "label": "First Name", "type": "text" },
+    { "id": "middle_name", "label": "Middle Name", "type": "text" },
+    { "id": "last_name", "label": "Last Name", "type": "text" },
+    { "id": "date_of_birth", "label": "Date of Birth", "type": "date" },
+
+    { "id": "address", "label": "Address", "type": "text" },
+    { "id": "city", "label": "City", "type": "text" },
+    { "id": "state", "label": "State", "type": "text" },
+    { "id": "zip_code", "label": "Zip Code", "type": "text" },
+
+    { "id": "email", "label": "Email Address", "type": "email" },
+    { "id": "phone", "label": "Phone Number", "type": "tel" },
+
+    { "id": "relationship", "label": "Relationship", "type": "select", "options_dataset": "relationship_options" },
+    { "id": "tshirt_size", "label": "T-shirt Size", "type": "select", "options_dataset": "tshirt_size_options" },
+
+    { "id": "discount_code", "label": "Discount Code", "type": "select", "options_dataset": "discount_code_options" }
+  ]
+}

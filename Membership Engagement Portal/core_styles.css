@@ -1,0 +1,144 @@
+/* =========================================================
+   DLBH Core Styles
+   Palette:
+   Base:      #2C2C2C
+   Contrast:  #EAEAEA
+   Primary:   #B2B3B5
+   Secondary: #31E2A2
+   Tertiary:  #1A1A1A
+========================================================= */
+
+:root {
+  --dlbh-base: #2C2C2C;
+  --dlbh-contrast: #EAEAEA;
+  --dlbh-primary: #B2B3B5;
+  --dlbh-secondary: #31E2A2;
+  --dlbh-tertiary: #1A1A1A;
+
+  /* optional utility values */
+  --dlbh-radius: 14px;
+  --dlbh-radius-sm: 10px;
+  --dlbh-border: 1px solid var(--dlbh-primary);
+  --dlbh-focus-ring: 0 0 0 3px rgba(49, 226, 162, 0.25);
+}
+
+/* =========================================================
+   Scoped Membership Form Styling
+   (Targets your generated markup: #dlbh-membership-form + .dlbh-field)
+========================================================= */
+
+#dlbh-membership-form {
+  background: var(--dlbh-contrast);
+  color: var(--dlbh-base);
+  border: var(--dlbh-border);
+  border-radius: var(--dlbh-radius);
+  padding: 18px;
+}
+
+/* field group */
+#dlbh-membership-form .dlbh-field {
+  margin-bottom: 14px;
+}
+
+/* labels */
+#dlbh-membership-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--dlbh-tertiary);
+}
+
+/* inputs / selects / textarea */
+#dlbh-membership-form input,
+#dlbh-membership-form select,
+#dlbh-membership-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  color: var(--dlbh-base);
+
+  border: var(--dlbh-border);
+  border-radius: var(--dlbh-radius-sm);
+
+  padding: 11px 12px;
+  line-height: 1.2;
+
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* focus */
+#dlbh-membership-form input:focus,
+#dlbh-membership-form select:focus,
+#dlbh-membership-form textarea:focus {
+  outline: none;
+  border-color: var(--dlbh-secondary);
+  box-shadow: var(--dlbh-focus-ring);
+}
+
+/* placeholders */
+#dlbh-membership-form input::placeholder,
+#dlbh-membership-form textarea::placeholder {
+  color: rgba(44, 44, 44, 0.6);
+}
+
+/* select dropdown arrow compatibility */
+#dlbh-membership-form select {
+  appearance: auto;
+}
+
+/* =========================================================
+   Buttons (future-proof if you add submit/next buttons)
+========================================================= */
+
+#dlbh-membership-form button,
+#dlbh-membership-form .dlbh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 14px;
+  border-radius: var(--dlbh-radius-sm);
+
+  border: 1px solid var(--dlbh-secondary);
+  background: var(--dlbh-secondary);
+  color: var(--dlbh-tertiary);
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: transform 0.05s ease, filter 0.15s ease;
+}
+
+#dlbh-membership-form button:hover,
+#dlbh-membership-form .dlbh-btn:hover {
+  filter: brightness(0.98);
+}
+
+#dlbh-membership-form button:active,
+#dlbh-membership-form .dlbh-btn:active {
+  transform: translateY(1px);
+}
+
+#dlbh-membership-form button:disabled,
+#dlbh-membership-form .dlbh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   Optional helper + error hooks
+========================================================= */
+
+#dlbh-membership-form .dlbh-help {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: rgba(44, 44, 44, 0.8);
+}
+
+#dlbh-membership-form .dlbh-error {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #b00020;
+}

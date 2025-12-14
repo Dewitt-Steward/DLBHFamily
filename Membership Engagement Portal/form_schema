@@ -1,6 +1,6 @@
 {
   "form_name": "Membership Enrollment",
-  "version": "1.1",
+  "version": "1.2",
   "steps": [
     { "index": 1, "id": "step_1_zip", "title": "Zip Code" },
     { "index": 2, "id": "step_2_primary", "title": "Primary Info" },
@@ -39,8 +39,9 @@
     ]
   },
   "fields": [
-    { "id": "zip_code", "name": "zip_code", "label": "Zip Code", "type": "text", "steps": [1, 2] },
+    { "id": "zip_code", "name": "zip_code", "label": "Zip Code", "type": "text", "steps": [1] },
 
+    { "id": "primary_zip_code", "name": "primary[zip_code]", "label": "Zip Code", "type": "text", "steps": [2] },
     { "id": "title", "name": "primary[title]", "label": "Title", "type": "select", "options_dataset": "title_options", "steps": [2] },
     { "id": "first_name", "name": "primary[first_name]", "label": "First Name", "type": "text", "steps": [2] },
     { "id": "middle_name", "name": "primary[middle_name]", "label": "Middle Name", "type": "text", "steps": [2] },

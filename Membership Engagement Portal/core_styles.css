@@ -89,16 +89,22 @@
 #dlbh-membership-form select {
   appearance: auto;
 }
-
 /* =========================================================
-   Multi-step Navigation (Back / Next / Submit)
+   Multi-step Navigation (Back / Next / Submit) — stronger override
 ========================================================= */
 
 #dlbh-membership-form .dlbh-nav {
-  display: flex;
-  gap: var(--dlbh-nav-gap);
-  justify-content: flex-end;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 18px !important;
   margin-top: 18px;
+}
+
+/* Fallback spacing even if a theme breaks flex-gap */
+#dlbh-membership-form .dlbh-nav > * + * {
+  margin-left: 18px !important;
 }
 
 #dlbh-membership-form .dlbh-nav .dlbh-prev,
@@ -107,19 +113,6 @@
   min-width: 120px;
 }
 
-/* On small screens, stack buttons for easier tapping */
-@media (max-width: 520px) {
-  #dlbh-membership-form .dlbh-nav {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  #dlbh-membership-form .dlbh-nav .dlbh-prev,
-  #dlbh-membership-form .dlbh-nav .dlbh-next,
-  #dlbh-membership-form .dlbh-nav .dlbh-submit {
-    width: 100%;
-    min-width: 0;
-  }
 }
 
 /* =========================================================

@@ -1,6 +1,13 @@
 {
   "form_name": "Membership Enrollment",
-  "version": "1.0",
+  "version": "1.1",
+  "steps": [
+    { "index": 1, "id": "step_1_zip", "title": "Zip Code" },
+    { "index": 2, "id": "step_2_primary", "title": "Primary Info" },
+    { "index": 3, "id": "step_3_member", "title": "Family Member" },
+    { "index": 4, "id": "step_4_shirt", "title": "T-Shirt" },
+    { "index": 5, "id": "step_5_checkout", "title": "Checkout" }
+  ],
   "datasets": {
     "title_options": [
       { "value": "mr", "label": "Mr." },
@@ -32,23 +39,29 @@
     ]
   },
   "fields": [
-    { "id": "title", "label": "Title", "type": "select", "options_dataset": "title_options" },
-    { "id": "first_name", "label": "First Name", "type": "text" },
-    { "id": "middle_name", "label": "Middle Name", "type": "text" },
-    { "id": "last_name", "label": "Last Name", "type": "text" },
-    { "id": "date_of_birth", "label": "Date of Birth", "type": "date" },
+    { "id": "zip_code", "name": "zip_code", "label": "Zip Code", "type": "text", "steps": [1, 2] },
 
-    { "id": "address", "label": "Address", "type": "text" },
-    { "id": "city", "label": "City", "type": "text" },
-    { "id": "state", "label": "State", "type": "text" },
-    { "id": "zip_code", "label": "Zip Code", "type": "text" },
+    { "id": "title", "name": "primary[title]", "label": "Title", "type": "select", "options_dataset": "title_options", "steps": [2] },
+    { "id": "first_name", "name": "primary[first_name]", "label": "First Name", "type": "text", "steps": [2] },
+    { "id": "middle_name", "name": "primary[middle_name]", "label": "Middle Name", "type": "text", "steps": [2] },
+    { "id": "last_name", "name": "primary[last_name]", "label": "Last Name", "type": "text", "steps": [2] },
+    { "id": "date_of_birth", "name": "primary[date_of_birth]", "label": "Date of Birth", "type": "date", "steps": [2] },
+    { "id": "relationship", "name": "primary[relationship]", "label": "Relationship", "type": "select", "options_dataset": "relationship_options", "steps": [2] },
 
-    { "id": "email", "label": "Email Address", "type": "email" },
-    { "id": "phone", "label": "Phone Number", "type": "tel" },
+    { "id": "address", "name": "primary[address]", "label": "Address", "type": "text", "steps": [2] },
+    { "id": "city", "name": "primary[city]", "label": "City", "type": "text", "steps": [2] },
+    { "id": "state", "name": "primary[state]", "label": "State", "type": "text", "steps": [2] },
 
-    { "id": "relationship", "label": "Relationship", "type": "select", "options_dataset": "relationship_options" },
-    { "id": "tshirt_size", "label": "T-shirt Size", "type": "select", "options_dataset": "tshirt_size_options" },
+    { "id": "email", "name": "primary[email]", "label": "Email Address", "type": "email", "steps": [2] },
+    { "id": "phone", "name": "primary[phone]", "label": "Phone Number", "type": "tel", "steps": [2] },
 
-    { "id": "discount_code", "label": "Discount Code", "type": "select", "options_dataset": "discount_code_options" }
+    { "id": "member_first_name", "name": "member[first_name]", "label": "First Name", "type": "text", "steps": [3] },
+    { "id": "member_last_name", "name": "member[last_name]", "label": "Last Name", "type": "text", "steps": [3] },
+    { "id": "member_date_of_birth", "name": "member[date_of_birth]", "label": "Date of Birth", "type": "date", "steps": [3] },
+    { "id": "member_relationship", "name": "member[relationship]", "label": "Relationship", "type": "select", "options_dataset": "relationship_options", "steps": [3] },
+
+    { "id": "tshirt_size", "name": "tshirt_size", "label": "T-shirt Size", "type": "select", "options_dataset": "tshirt_size_options", "steps": [4] },
+
+    { "id": "discount_code", "name": "discount_code", "label": "Discount Code", "type": "select", "options_dataset": "discount_code_options", "steps": [5] }
   ]
 }

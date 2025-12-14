@@ -1,8 +1,10 @@
 (function () {
-  const GEO_URL =
-    "https://cdn.jsdelivr.net/gh/Dewitt-Steward/DLBHFamily@main/Membership%20Engagement%20Portal/Geography.json";
+  // ZIP source (CDN first, raw fallback)
+  const GEO_URLS = [
+    "https://cdn.jsdelivr.net/gh/Dewitt-Steward/DLBHFamily@main/Membership%20Engagement%20Portal/Geography.json",
+    "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/Membership%20Engagement%20Portal/Geography.json"
+  ];
 
-  // internal state
   let zipSetPromise = null;
   let step1ZipIsValid = false;
 
@@ -12,22 +14,38 @@
     return m ? m[1] : "";
   }
 
+  async function fetchJson(url) {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return res.json();
+  }
+
   async function loadZipSet() {
     if (zipSetPromise) return zipSetPromise;
 
     zipSetPromise = (async () => {
-      const res = await fetch(GEO_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("Geography load failed: " + res.status);
-      const rows = await res.json(); // expects array of objects
+      let lastErr = null;
 
-      const set = new Set();
-      if (Array.isArray(rows)) {
-        for (const r of rows) {
-          const z = normalizeZip(r && (r["Zip Code"] ?? r.zip_code ?? r.zip));
-          if (z) set.add(z);
+      for (const url of GEO_URLS) {
+        try {
+          const rows = await fetchJson(url); // expected array of objects
+          const set = new Set();
+
+          if (Array.isArray(rows)) {
+            for (const r of rows) {
+              const z = normalizeZip(r && (r["Zip Code"] ?? r.zip_code ?? r.zip));
+              if (z) set.add(z);
+            }
+          }
+
+          if (set.size === 0) throw new Error("No ZIPs found in Geography data");
+          return set;
+        } catch (e) {
+          lastErr = e;
         }
       }
-      return set;
+
+      throw lastErr || new Error("Unable to load ZIP data");
     })();
 
     return zipSetPromise;
@@ -38,17 +56,6 @@
       form.querySelector('.dlbh-step[data-step-index="1"]') ||
       form.querySelector(".dlbh-step")
     );
-  }
-
-  function getStep1ZipInput(form) {
-    const step1 = getStep1(form);
-    return step1 ? step1.querySelector("#zip_code") : null;
-  }
-
-  function getStep1NextBtn(form) {
-    const step1 = getStep1(form);
-    // Prefer the step’s own Next
-    return step1 ? step1.querySelector(".dlbh-next") : null;
   }
 
   function ensureZipErrorEl(zipInput) {
@@ -72,15 +79,16 @@
     btn.setAttribute("aria-disabled", String(!!disabled));
   }
 
-  function attachZipGate(form) {
-    const zipInput = getStep1ZipInput(form);
-    const nextBtn = getStep1NextBtn(form);
+  function attachZipGate(form, steps, getPos) {
+    const step1 = getStep1(form);
+    if (!step1) return;
 
+    const zipInput = step1.querySelector("#zip_code");
+    const nextBtn  = step1.querySelector(".dlbh-next"); // Step 1 button
     if (!zipInput || !nextBtn) return;
 
     const errEl = ensureZipErrorEl(zipInput);
 
-    // default: not valid until proven
     step1ZipIsValid = false;
     setBtnDisabled(nextBtn, true);
     errEl.textContent = "";
@@ -88,7 +96,7 @@
     async function validate() {
       const raw = String(zipInput.value || "").trim();
 
-      // blank -> disabled, no error
+      // blank ZIP -> disable, no error
       if (!raw) {
         step1ZipIsValid = false;
         setBtnDisabled(nextBtn, true);
@@ -98,7 +106,7 @@
 
       const z = normalizeZip(raw);
 
-      // not 5 digits yet -> disabled, no error
+      // not 5 digits yet -> disable, no error
       if (!z) {
         step1ZipIsValid = false;
         setBtnDisabled(nextBtn, true);
@@ -106,7 +114,11 @@
         return;
       }
 
+      // check dataset
       try {
+        // optional status while loading
+        errEl.textContent = "Checking Zip Code...";
+
         const set = await loadZipSet();
         if (set.has(z)) {
           step1ZipIsValid = true;
@@ -120,14 +132,28 @@
       } catch (e) {
         step1ZipIsValid = false;
         setBtnDisabled(nextBtn, true);
-        errEl.textContent = "Invalid Zip Code.";
+        errEl.textContent = "Zip lookup unavailable. Please refresh and try again.";
       }
     }
 
     zipInput.addEventListener("input", validate);
     zipInput.addEventListener("blur", validate);
 
-    // run once for autofill cases
+    // hard gate: block Next click on Step 1 unless valid
+    form.addEventListener("click", (e) => {
+      const next = e.target.closest(".dlbh-next");
+      if (!next) return;
+
+      const currentStep = steps[getPos()];
+      const stepIndex = currentStep?.getAttribute("data-step-index");
+
+      if (String(stepIndex) === "1" && !step1ZipIsValid) {
+        e.preventDefault();
+        validate(); // force message
+      }
+    }, true);
+
+    // run once (autofill)
     validate();
   }
 
@@ -145,35 +171,13 @@
       steps[pos].scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // IMPORTANT: gate the click itself on Step 1
     form.addEventListener("click", (e) => {
-      const next = e.target.closest(".dlbh-next");
-      const prev = e.target.closest(".dlbh-prev");
-
-      if (next) {
-        // If we're on step 1, block Next unless ZIP is valid
-        const currentStep = steps[pos];
-        const stepIndex = currentStep?.getAttribute("data-step-index");
-        if (String(stepIndex) === "1" && !step1ZipIsValid) {
-          e.preventDefault();
-          // trigger validation message if user clicked Next prematurely
-          const zipInput = getStep1ZipInput(form);
-          if (zipInput) zipInput.dispatchEvent(new Event("blur", { bubbles: true }));
-          return;
-        }
-
-        e.preventDefault();
-        show(pos + 1);
-      }
-
-      if (prev) {
-        e.preventDefault();
-        show(pos - 1);
-      }
+      if (e.target.closest(".dlbh-next")) { e.preventDefault(); show(pos + 1); }
+      if (e.target.closest(".dlbh-prev")) { e.preventDefault(); show(pos - 1); }
     });
 
     show(0);
-    attachZipGate(form);
+    attachZipGate(form, steps, () => pos);
   }
 
   document.addEventListener("DOMContentLoaded", () => {

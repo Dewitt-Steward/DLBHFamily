@@ -5,7 +5,8 @@ import os
 import sys
 import requests
 
-CSV_URL = "https://gist.githubusercontent.com/Tucker-Eric/6a1a6b164726f21bb699623b06591389/raw/d87104248e4796f872412993a8b43d583c889176/us_zips.csv"
+ZIP_CSV_URL = "https://gist.githubusercontent.com/Tucker-Eric/6a1a6b164726f21bb699623b06591389/raw/d87104248e4796f872412993a8b43d583c889176/us_zips.csv"
+AREA_CODE_CSV_URL = "https://raw.githubusercontent.com/ravisorg/Area-Code-Geolocation-Database/refs/heads/master/us-area-code-cities.csv"
 
 # geography.py lives in: DLBHFamily/src/python/geography.py
 # Repo root is:           DLBHFamily/
@@ -22,12 +23,7 @@ OUT_PATH = os.path.join(OUT_DIR, "geography.json")
 # Region Number: 1=Northeast, 2=Midwest, 3=South, 4=West
 # Division Number: 1..9 as below
 # ---------------------------------------------------------
-REGION_NUM = {
-    "Northeast": "1",
-    "Midwest": "2",
-    "South": "3",
-    "West": "4",
-}
+REGION_NUM = {"Northeast": "1", "Midwest": "2", "South": "3", "West": "4"}
 
 DIVISION_NUM = {
     "New England": "1",
@@ -49,19 +45,16 @@ STATE_TO_REGION_DIVISION = {
     "NH": ("Northeast", "New England"),
     "RI": ("Northeast", "New England"),
     "VT": ("Northeast", "New England"),
-
     # NORTHEAST — Middle Atlantic
     "NJ": ("Northeast", "Middle Atlantic"),
     "NY": ("Northeast", "Middle Atlantic"),
     "PA": ("Northeast", "Middle Atlantic"),
-
     # MIDWEST — East North Central
     "IL": ("Midwest", "East North Central"),
     "IN": ("Midwest", "East North Central"),
     "MI": ("Midwest", "East North Central"),
     "OH": ("Midwest", "East North Central"),
     "WI": ("Midwest", "East North Central"),
-
     # MIDWEST — West North Central
     "IA": ("Midwest", "West North Central"),
     "KS": ("Midwest", "West North Central"),
@@ -70,7 +63,6 @@ STATE_TO_REGION_DIVISION = {
     "NE": ("Midwest", "West North Central"),
     "ND": ("Midwest", "West North Central"),
     "SD": ("Midwest", "West North Central"),
-
     # SOUTH — South Atlantic
     "DE": ("South", "South Atlantic"),
     "FL": ("South", "South Atlantic"),
@@ -81,19 +73,16 @@ STATE_TO_REGION_DIVISION = {
     "VA": ("South", "South Atlantic"),
     "WV": ("South", "South Atlantic"),
     "DC": ("South", "South Atlantic"),
-
     # SOUTH — East South Central
     "AL": ("South", "East South Central"),
     "KY": ("South", "East South Central"),
     "MS": ("South", "East South Central"),
     "TN": ("South", "East South Central"),
-
     # SOUTH — West South Central
     "AR": ("South", "West South Central"),
     "LA": ("South", "West South Central"),
     "OK": ("South", "West South Central"),
     "TX": ("South", "West South Central"),
-
     # WEST — Mountain
     "AZ": ("West", "Mountain"),
     "CO": ("West", "Mountain"),
@@ -103,7 +92,6 @@ STATE_TO_REGION_DIVISION = {
     "NM": ("West", "Mountain"),
     "UT": ("West", "Mountain"),
     "WY": ("West", "Mountain"),
-
     # WEST — Pacific
     "AK": ("West", "Pacific"),
     "CA": ("West", "Pacific"),
@@ -141,8 +129,10 @@ STATE_NAME_TO_ABBR = {
     "WISCONSIN": "WI", "WYOMING": "WY", "DISTRICT OF COLUMBIA": "DC",
 }
 
+ABBR_TO_STATE_NAME = {abbr: name.title() for name, abbr in STATE_NAME_TO_ABBR.items()}
 
-def normalize_state(value: str) -> str:
+
+def normalize_state_to_abbr(value: str) -> str:
     v = (value or "").strip()
     if not v:
         return ""
@@ -151,42 +141,27 @@ def normalize_state(value: str) -> str:
     return STATE_NAME_TO_ABBR.get(v.upper(), v)
 
 
-def get_geo_fields(state_value: str):
-    abbr = normalize_state(state_value)
+def build_geography_rows(zip_csv_text: str):
+    reader = csv.DictReader(io.StringIO(zip_csv_text))
+    rows = []
 
-    region, division = STATE_TO_REGION_DIVISION.get(abbr, ("", ""))
-    region_num = REGION_NUM.get(region, "")
-    division_num = DIVISION_NUM.get(division, "")
-    fips = STATE_TO_FIPS.get(abbr, "")
-
-    return region, division, abbr, region_num, division_num, fips
-
-
-def main():
-    os.makedirs(OUT_DIR, exist_ok=True)
-
-    try:
-        r = requests.get(CSV_URL, timeout=60)
-        r.raise_for_status()
-    except Exception as e:
-        print(e, file=sys.stderr)
-        sys.exit(1)
-
-    reader = csv.DictReader(io.StringIO(r.text))
-
-    cleaned = []
     for row in reader:
         city = (row.get("city") or "").strip()
         zip_code = (row.get("zip") or "").strip().zfill(5)
 
-        region, division, abbr, region_num, division_num, fips = get_geo_fields(row.get("state") or "")
+        abbr = normalize_state_to_abbr(row.get("state") or "")
+        state_name = ABBR_TO_STATE_NAME.get(abbr, "")  # full name
+        region, division = STATE_TO_REGION_DIVISION.get(abbr, ("", ""))
+        region_num = REGION_NUM.get(region, "")
+        division_num = DIVISION_NUM.get(division, "")
+        fips = STATE_TO_FIPS.get(abbr, "")
 
-        # Keys inserted in exact order requested
-        cleaned.append({
+        # Key insertion order = EXACT order you requested (+ Abbreviation)
+        rows.append({
             "Region": region,
             "Division": division,
             "City": city,
-            "State": abbr,            # 2-letter (kept for compatibility)
+            "State": state_name,
             "Zip Code": zip_code,
             "Abbreviation": abbr,
             "Region Number": region_num,
@@ -194,8 +169,70 @@ def main():
             "FIPS Code": fips
         })
 
+    return rows
+
+
+def build_area_code_rows(area_code_csv_text: str):
+    """
+    Expected columns (from your example):
+    area_code, city, state, country, lat, lon
+    We only keep: City, State, Area
+    """
+    rows = []
+    r = csv.reader(io.StringIO(area_code_csv_text))
+
+    for i, parts in enumerate(r):
+        if not parts:
+            continue
+
+        # Skip header if present
+        if i == 0 and (parts[0].strip().lower() in {"area", "area_code", "npa"}):
+            continue
+
+        area = (parts[0] or "").strip()
+        city = (parts[1] or "").strip()
+        state = (parts[2] or "").strip().strip('"')
+
+        # basic guard
+        if not area or not city or not state:
+            continue
+
+        rows.append({
+            "City": city,
+            "State": state,
+            "Area": area
+        })
+
+    return rows
+
+
+def fetch_text(url: str, timeout: int = 60) -> str:
+    r = requests.get(url, timeout=timeout)
+    r.raise_for_status()
+    return r.text
+
+
+def main():
+    os.makedirs(OUT_DIR, exist_ok=True)
+
+    try:
+        zip_text = fetch_text(ZIP_CSV_URL, timeout=60)
+        area_text = fetch_text(AREA_CODE_CSV_URL, timeout=60)
+    except Exception as e:
+        print(e, file=sys.stderr)
+        sys.exit(1)
+
+    geography_rows = build_geography_rows(zip_text)
+    area_code_rows = build_area_code_rows(area_text)
+
+    # One output file, with a dedicated "area_codes section"
+    payload = {
+        "geography": geography_rows,
+        "area_codes": area_code_rows
+    }
+
     with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(cleaned, f, ensure_ascii=False, indent=2)
+        json.dump(payload, f, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":

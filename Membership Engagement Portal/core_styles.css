@@ -142,3 +142,41 @@
   font-weight: 700;
   color: #b00020;
 }
+/* =========================================================
+   Step Container Stability (prevents size jumping between steps)
+   Works with: .screen / .form-step patterns
+========================================================= */
+
+/* Give the form a stable frame */
+#dlbh-membership-form {
+  position: relative;
+  overflow: hidden; /* prevents content flash during step transitions */
+}
+
+/* If your steps use either .screen or .form-step */
+#dlbh-membership-form .screen,
+#dlbh-membership-form .form-step {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Only the active step is visible */
+#dlbh-membership-form .screen.is-active,
+#dlbh-membership-form .form-step.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* If your current JS uses hidden/display toggles, this helps too */
+#dlbh-membership-form .screen[hidden],
+#dlbh-membership-form .form-step[hidden] {
+  display: none !important;
+}

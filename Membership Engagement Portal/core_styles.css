@@ -142,34 +142,3 @@
   font-weight: 700;
   color: #b00020;
 }
-/* =========================================================
-   DLBH BACKGROUND LOCK (prevents blur/zoom as Step 5 grows)
-========================================================= */
-
-/* Stop any old wrapper/background rules from affecting the image */
-.dlbh-glass-page,
-#membership-background,
-#dlbh-membership-form {
-  background-image: none !important;
-}
-
-/* Put the background on a fixed layer that never resizes */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-
-  background: url("https://dlbhfamily.com/wp-content/uploads/2025/12/istockphoto-1462151150-612x612-2.jpg")
-    center / cover no-repeat;
-
-  /* Avoid blur from transforms/filters elsewhere */
-  transform: none !important;
-  filter: none !important;
-}
-
-/* Ensure the form stays above the fixed background layer */
-#dlbh-membership-form {
-  position: relative;
-  z-index: 1;
-}

@@ -168,8 +168,8 @@ def build_unique_area_codes(area_code_csv_text: str):
     Extract ONLY unique area codes (first column) from:
       https://raw.githubusercontent.com/ravisorg/Area-Code-Geolocation-Database/refs/heads/master/us-area-code-cities.csv
 
-    Output shape:
-      [{"value":"201","label":"201"}, ...]  (dropdown-ready)
+    Output shape (simple JSON list):
+      ["201","202","203",...]
     """
     unique = set()
     reader = csv.reader(io.StringIO(area_code_csv_text))
@@ -188,7 +188,7 @@ def build_unique_area_codes(area_code_csv_text: str):
         if area.isdigit() and len(area) == 3:
             unique.add(area)
 
-    return [{"value": a, "label": a} for a in sorted(unique)]
+    return sorted(unique)
 
 
 def main():
@@ -223,7 +223,7 @@ def main():
             "FIPS Code": fips
         })
 
-    # 2) Load area code CSV and extract unique area codes
+    # 2) Load area code CSV and extract unique area codes (simple list)
     try:
         ac = requests.get(AREA_CODE_CSV_URL, timeout=60)
         ac.raise_for_status()

@@ -1,38 +1,89 @@
 /* =========================================================
-   DLBH Core Styles
-   Palette:
-   Base:      #2C2C2C
-   Contrast:  #EAEAEA
-   Primary:   #B2B3B5
-   Secondary: #31E2A2
-   Tertiary:  #1A1A1A
+   DLBH Core Styles (Warm Navy Theme)
+   Professional + inviting, designed to match Kentwood-style layout
+
+   Palette Roles:
+   Base:      text
+   Contrast:  light surfaces
+   Primary:   borders / subtle lines
+   Secondary: accent / CTA
+   Tertiary:  deep section background (navy)
 ========================================================= */
 
 :root {
-  --dlbh-base: #2C2C2C;
-  --dlbh-contrast: #EAEAEA;
-  --dlbh-primary: #B2B3B5;
-  --dlbh-secondary: #31E2A2;
-  --dlbh-tertiary: #1A1A1A;
+  /* ===== Warm + Professional Navy Theme ===== */
+  --dlbh-base: #101223;        /* main text */
+  --dlbh-contrast: #FAF7F2;    /* warm surface */
+  --dlbh-primary: #C9CFDA;     /* borders / dividers */
+  --dlbh-secondary: #D6A94E;   /* warm accent */
+  --dlbh-tertiary: #070A2B;    /* deep navy */
 
-  /* optional utility values */
+  /* layout + UI */
   --dlbh-radius: 14px;
-  --dlbh-radius-sm: 10px;
-  --dlbh-border: 1px solid var(--dlbh-primary);
-  --dlbh-focus-ring: 0 0 0 3px rgba(49, 226, 162, 0.25);
+  --dlbh-radius-sm: 12px;
+  --dlbh-border: 1px solid rgba(201, 207, 218, 0.85);
+  --dlbh-focus-ring: 0 0 0 3px rgba(214, 169, 78, 0.28);
+
+  /* shared width control (use on image sections + forms) */
+  --dlbh-content-max: 1140px;
+  --dlbh-content-pad: 24px;
+}
+
+/* =========================================================
+   Shared Section Width (use on Group/Section blocks)
+   Add class "dlbh-section" to the wrapper Group block
+========================================================= */
+.dlbh-section {
+  max-width: var(--dlbh-content-max);
+  margin: 0 auto;
+  padding-left: var(--dlbh-content-pad);
+  padding-right: var(--dlbh-content-pad);
 }
 
 /* =========================================================
    Scoped Membership Form Styling
-   (Targets your generated markup: #dlbh-membership-form + .dlbh-field)
+   Targets: #dlbh-membership-form + .dlbh-field + .dlbh-step
 ========================================================= */
 
 #dlbh-membership-form {
+  /* Match content width if not wrapped */
+  max-width: var(--dlbh-content-max);
+  margin: 0 auto;
+
   background: var(--dlbh-contrast);
   color: var(--dlbh-base);
   border: var(--dlbh-border);
   border-radius: var(--dlbh-radius);
-  padding: 18px;
+  padding: 22px;
+
+  /* Reduces perceived "jump" when steps vary */
+  min-height: 420px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* If you DO wrap it in .dlbh-section, fill that wrapper */
+.dlbh-section #dlbh-membership-form {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Step indicator */
+#dlbh-membership-form .dlbh-step-indicator {
+  font-weight: 700;
+  color: rgba(16, 18, 35, 0.75);
+  margin-bottom: 10px;
+}
+
+/* Steps (your JS uses .dlbh-step + hidden attribute) */
+#dlbh-membership-form .dlbh-step {
+  margin: 0;
+}
+
+/* Ensure hidden steps don't take space */
+#dlbh-membership-form .dlbh-step[hidden] {
+  display: none !important;
 }
 
 /* field group */
@@ -40,12 +91,20 @@
   margin-bottom: 14px;
 }
 
+/* headings inside steps */
+#dlbh-membership-form h2,
+#dlbh-membership-form h3 {
+  margin: 6px 0 12px;
+  color: var(--dlbh-tertiary);
+  letter-spacing: 0.2px;
+}
+
 /* labels */
 #dlbh-membership-form label {
   display: block;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 6px;
-  color: var(--dlbh-tertiary);
+  color: rgba(7, 10, 43, 0.9);
 }
 
 /* inputs / selects / textarea */
@@ -61,7 +120,7 @@
   border: var(--dlbh-border);
   border-radius: var(--dlbh-radius-sm);
 
-  padding: 11px 12px;
+  padding: 12px 12px;
   line-height: 1.2;
 
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -79,7 +138,7 @@
 /* placeholders */
 #dlbh-membership-form input::placeholder,
 #dlbh-membership-form textarea::placeholder {
-  color: rgba(44, 44, 44, 0.6);
+  color: rgba(16, 18, 35, 0.45);
 }
 
 /* select dropdown arrow compatibility */
@@ -88,7 +147,7 @@
 }
 
 /* =========================================================
-   Buttons (future-proof if you add submit/next buttons)
+   Buttons
 ========================================================= */
 
 #dlbh-membership-form button,
@@ -97,17 +156,17 @@
   align-items: center;
   justify-content: center;
 
-  padding: 10px 14px;
-  border-radius: var(--dlbh-radius-sm);
+  padding: 10px 16px;
+  border-radius: 999px; /* pill style */
 
-  border: 1px solid var(--dlbh-secondary);
+  border: 2px solid var(--dlbh-secondary);
   background: var(--dlbh-secondary);
   color: var(--dlbh-tertiary);
 
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
 
-  transition: transform 0.05s ease, filter 0.15s ease;
+  transition: transform 0.05s ease, filter 0.15s ease, background 0.15s ease;
 }
 
 #dlbh-membership-form button:hover,
@@ -126,57 +185,76 @@
   cursor: not-allowed;
 }
 
+/* Button row helper if you use it */
+#dlbh-membership-form .dlbh-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
 /* =========================================================
    Optional helper + error hooks
 ========================================================= */
 
 #dlbh-membership-form .dlbh-help {
-  margin-top: 6px;
-  font-size: 0.9rem;
-  color: rgba(44, 44, 44, 0.8);
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: rgba(16, 18, 35, 0.72);
 }
 
 #dlbh-membership-form .dlbh-error {
-  margin-top: 6px;
-  font-size: 0.9rem;
-  font-weight: 700;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #b00020;
 }
+
 /* =========================================================
-   Step Container Stability (prevents size jumping between steps)
-   Works with: .screen / .form-step patterns
+   Optional CTA Bar (Kentwood-style strip)
+   Use for footer/CTA sections
 ========================================================= */
 
-/* Give the form a stable frame */
-#dlbh-membership-form {
-  position: relative;
-  overflow: hidden; /* prevents content flash during step transitions */
+.dlbh-cta-bar {
+  background: var(--dlbh-tertiary);
+  color: var(--dlbh-contrast);
+  padding: 28px var(--dlbh-content-pad);
 }
 
-/* If your steps use either .screen or .form-step */
-#dlbh-membership-form .screen,
-#dlbh-membership-form .form-step {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-
-  transition: opacity 0.25s ease, transform 0.25s ease;
+.dlbh-cta-bar .dlbh-cta-inner {
+  max-width: var(--dlbh-content-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
-/* Only the active step is visible */
-#dlbh-membership-form .screen.is-active,
-#dlbh-membership-form .form-step.is-active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+.dlbh-cta-bar .dlbh-cta-text {
+  font-weight: 700;
+  letter-spacing: 0.2px;
 }
 
-/* If your current JS uses hidden/display toggles, this helps too */
-#dlbh-membership-form .screen[hidden],
-#dlbh-membership-form .form-step[hidden] {
-  display: none !important;
+.dlbh-cta-bar .dlbh-cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dlbh-cta-bar .dlbh-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(250, 247, 242, 0.9);
+  color: var(--dlbh-contrast);
+  background: transparent;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.dlbh-cta-bar .dlbh-pill:hover {
+  background: rgba(250, 247, 242, 0.08);
 }

@@ -23,24 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Show repo structure (debug)
-        run: |
-          pwd
-          ls -la
-          ls -la src || true
-          ls -la src/python || true
-          ls -la data || true
-
       - name: Run generator
         run: |
           python src/python/geography.py
-
-      - name: Verify output exists (debug)
-        run: |
-          ls -la data || true
-          ls -la data/geography || true
-          test -f data/geography/geography.json
-          echo "✅ geography.json created"
 
       - name: Commit and push if changed
         run: |

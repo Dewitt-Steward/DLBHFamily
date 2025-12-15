@@ -21,7 +21,7 @@ OUT_PATH = os.path.join(OUT_DIR, "geography.json")
 # ---------------------------------------------------------
 # Region/Division (US Census) + their numbers
 # Region Number: 1=Northeast, 2=Midwest, 3=South, 4=West
-# Division Number: 1..9 as below
+# Division Number: 1..9
 # ---------------------------------------------------------
 REGION_NUM = {"Northeast": "1", "Midwest": "2", "South": "3", "West": "4"}
 
@@ -128,7 +128,6 @@ STATE_NAME_TO_ABBR = {
     "VERMONT": "VT", "VIRGINIA": "VA", "WASHINGTON": "WA", "WEST VIRGINIA": "WV",
     "WISCONSIN": "WI", "WYOMING": "WY", "DISTRICT OF COLUMBIA": "DC",
 }
-
 ABBR_TO_STATE_NAME = {abbr: name.title() for name, abbr in STATE_NAME_TO_ABBR.items()}
 
 
@@ -141,6 +140,12 @@ def normalize_state_to_abbr(value: str) -> str:
     return STATE_NAME_TO_ABBR.get(v.upper(), v)
 
 
+def fetch_text(url: str, timeout: int = 60) -> str:
+    r = requests.get(url, timeout=timeout)
+    r.raise_for_status()
+    return r.text
+
+
 def build_geography_rows(zip_csv_text: str):
     reader = csv.DictReader(io.StringIO(zip_csv_text))
     rows = []
@@ -150,13 +155,14 @@ def build_geography_rows(zip_csv_text: str):
         zip_code = (row.get("zip") or "").strip().zfill(5)
 
         abbr = normalize_state_to_abbr(row.get("state") or "")
-        state_name = ABBR_TO_STATE_NAME.get(abbr, "")  # full name
+        state_name = ABBR_TO_STATE_NAME.get(abbr, "")
+
         region, division = STATE_TO_REGION_DIVISION.get(abbr, ("", ""))
         region_num = REGION_NUM.get(region, "")
         division_num = DIVISION_NUM.get(division, "")
         fips = STATE_TO_FIPS.get(abbr, "")
 
-        # Key insertion order = EXACT order you requested (+ Abbreviation)
+        # Exact order you requested (+ Abbreviation after Zip Code)
         rows.append({
             "Region": region,
             "Division": division,
@@ -172,13 +178,15 @@ def build_geography_rows(zip_csv_text: str):
     return rows
 
 
-def build_area_code_rows(area_code_csv_text: str):
+def build_area_code_options(area_code_csv_text: str):
     """
-    Expected columns (from your example):
+    Source file columns include:
     area_code, city, state, country, lat, lon
-    We only keep: City, State, Area
+    We ONLY keep unique area codes.
+    Output shape:
+      [{ "value": "201", "label": "201" }, ...]
     """
-    rows = []
+    unique = set()
     r = csv.reader(io.StringIO(area_code_csv_text))
 
     for i, parts in enumerate(r):
@@ -186,30 +194,15 @@ def build_area_code_rows(area_code_csv_text: str):
             continue
 
         # Skip header if present
-        if i == 0 and (parts[0].strip().lower() in {"area", "area_code", "npa"}):
+        first = (parts[0] or "").strip().lower()
+        if i == 0 and first in {"area", "area_code", "npa"}:
             continue
 
-        area = (parts[0] or "").strip()
-        city = (parts[1] or "").strip()
-        state = (parts[2] or "").strip().strip('"')
+        area = (parts[0] or "").strip().strip('"')
+        if area.isdigit() and len(area) == 3:
+            unique.add(area)
 
-        # basic guard
-        if not area or not city or not state:
-            continue
-
-        rows.append({
-            "City": city,
-            "State": state,
-            "Area": area
-        })
-
-    return rows
-
-
-def fetch_text(url: str, timeout: int = 60) -> str:
-    r = requests.get(url, timeout=timeout)
-    r.raise_for_status()
-    return r.text
+    return [{"value": a, "label": a} for a in sorted(unique)]
 
 
 def main():
@@ -222,13 +215,9 @@ def main():
         print(e, file=sys.stderr)
         sys.exit(1)
 
-    geography_rows = build_geography_rows(zip_text)
-    area_code_rows = build_area_code_rows(area_text)
-
-    # One output file, with a dedicated "area_codes section"
     payload = {
-        "geography": geography_rows,
-        "area_codes": area_code_rows
+        "geography": build_geography_rows(zip_text),
+        "area_codes": build_area_code_options(area_text)
     }
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:

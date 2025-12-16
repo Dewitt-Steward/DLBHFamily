@@ -1,0 +1,42 @@
+name: Append Schema to Geography JSON
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "DLBHFamily/src/python/append_schema_to_geography.py"
+      - "DLBHFamily/data/geography/geography.json"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run script (append schema)
+        run: |
+          python -m pip install --upgrade pip
+          python DLBHFamily/src/python/append_schema_to_geography.py
+
+      - name: Commit changes (if any)
+        run: |
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add DLBHFamily/data/geography/geography.json
+            git commit -m "Append membership schema to geography.json"
+            git push
+          else
+            echo "No changes to commit."
+          fi

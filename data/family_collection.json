@@ -1,0 +1,18 @@
+{
+  "datasets": {
+    "tshirt_sizes": [
+      { "value": "YS", "label": "Youth Small" },
+      { "value": "YM", "label": "Youth Medium" },
+      { "value": "YL", "label": "Youth Large" },
+      { "value": "S", "label": "Small" },
+      { "value": "M", "label": "Medium" },
+      { "value": "L", "label": "Large" },
+      { "value": "XL", "label": "XL" },
+      { "value": "2XL", "label": "2XL" },
+      { "value": "3XL", "label": "3XL" }
+    ],
+    "tshirt_prices": [
+      { "value": "10.00", "label": "$10.00" }
+    ]
+  }
+}

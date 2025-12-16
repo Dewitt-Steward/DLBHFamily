@@ -13,17 +13,6 @@
     "yes_no_options": [
       { "value": "Yes", "label": "Yes" },
       { "value": "No", "label": "No" }
-    ],
-    "tshirt_sizes": [
-      { "value": "YS", "label": "Youth Small" },
-      { "value": "YM", "label": "Youth Medium" },
-      { "value": "YL", "label": "Youth Large" },
-      { "value": "S", "label": "Small" },
-      { "value": "M", "label": "Medium" },
-      { "value": "L", "label": "Large" },
-      { "value": "XL", "label": "XL" },
-      { "value": "2XL", "label": "2XL" },
-      { "value": "3XL", "label": "3XL" }
     ]
   },
 
@@ -38,6 +27,15 @@
         { "field_id": "region", "json_key": "Region" },
         { "field_id": "division", "json_key": "Division" }
       ]
+    },
+
+    "family_collection": {
+      "url": "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/data/family_collection.json",
+      "datasets_path": "datasets",
+      "datasets": {
+        "tshirt_sizes": "tshirt_sizes",
+        "tshirt_prices": "tshirt_prices"
+      }
     }
   },
 
@@ -49,12 +47,12 @@
 
     { "id": "address", "label": "Address", "type": "text" },
 
+    { "id": "zip_code", "label": "Zip Code", "type": "text" },
+
     { "id": "city", "label": "City", "type": "text", "readonly": true },
+    { "id": "state", "label": "State", "type": "text", "readonly": true },
     { "id": "region", "label": "Region", "type": "text", "readonly": true },
     { "id": "division", "label": "Division", "type": "text", "readonly": true },
-    { "id": "state", "label": "State", "type": "text", "readonly": true },
-
-    { "id": "zip_code", "label": "Zip Code", "type": "text" },
 
     { "id": "email", "label": "Email Address", "type": "email" },
     { "id": "phone", "label": "Phone Number", "type": "tel" },
@@ -62,6 +60,20 @@
     { "id": "relationship", "label": "Relationship", "type": "select", "options_dataset": "relationship_options" },
     { "id": "food_allergy", "label": "Food Allergy", "type": "select", "options_dataset": "yes_no_options" },
 
-    { "id": "tshirt_size", "label": "T-Shirt Size", "type": "select", "options_dataset": "tshirt_sizes" }
+    {
+      "id": "tshirt_size",
+      "label": "T-Shirt Size",
+      "type": "select",
+      "options_lookup": "family_collection",
+      "options_dataset": "tshirt_sizes"
+    },
+    {
+      "id": "tshirt_price",
+      "label": "T-Shirt Price",
+      "type": "select",
+      "options_lookup": "family_collection",
+      "options_dataset": "tshirt_prices",
+      "readonly": true
+    }
   ]
 }

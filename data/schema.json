@@ -1,215 +1,29 @@
 {
-  "form_id": "dlbh_membership_enrollment",
-  "version": "1.0.0",
-  "tone": "fun_turbotax_style",
-  "lookups": {
-    "geography_by_zip": {
-      "label": "Geography (ZIP → City/State/Region/Division)",
-      "url": "https://raw.githubusercontent.com/Dewitt-Steward/DLBHFamily/refs/heads/main/data/geography.json",
-      "record_shape": {
-        "zip": "Zip Code",
-        "city": "City",
-        "state": "State",
-        "region": "Region",
-        "division": "Division"
+  "schema": {
+    "form_id": "schema",
+    "steps": [
+      {
+        "id": "step_1_household_basics",
+        "fields": ["zip_code", "household_count"]
       },
-      "index_by": ["Zip Code"]
-    }
-  },
-  "steps": [
-    {
-      "id": "step_1_household_basics",
-      "title": "Quick start",
-      "intro": "Let’s get two quick details first—then we’ll cruise through the rest.",
-      "questions": [
-        {
-          "id": "zip_code",
-          "label": "What’s your ZIP code?",
-          "type": "text"
-        },
-        {
-          "id": "household_count",
-          "label": "Including you, how many people are in your household? (1–10)",
-          "type": "number"
-        }
-      ]
-    },
-    {
-      "id": "step_2_household_members",
-      "title": "Meet the household",
-      "intro": "Perfect. Now let’s add everyone in your household—one person at a time. Think “roster mode.”",
-      "question_groups": [
-        {
-          "id": "household_member",
-          "label": "Household member",
-          "is_template": true,
-          "repeat_hint": "household_count",
-          "questions": [
-            {
-              "id": "title",
-              "label": "Title",
-              "type": "select",
-              "choices": ["Mr.", "Mrs.", "Ms.", "Miss", "Dr.", "Rev.", "None", "Other"]
-            },
-            { "id": "first_name", "label": "First name", "type": "text" },
-            { "id": "middle_name", "label": "Middle name", "type": "text" },
-            { "id": "last_name", "label": "Last name", "type": "text" },
-            {
-              "id": "suffix",
-              "label": "Suffix",
-              "type": "select",
-              "choices": ["None", "Jr.", "Sr.", "II", "III", "IV", "V", "Esq.", "MD", "PhD", "Other"]
-            },
-            { "id": "date_of_birth", "label": "Date of birth", "type": "date" },
-            {
-              "id": "relationship",
-              "label": "Relationship",
-              "type": "select",
-              "choices": ["Self", "Spouse/Partner", "Dependent"]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "step_3_contact_details",
-      "title": "Contact details",
-      "intro": "Nice. Now let’s lock in where you live and how we can reach you. We’ll use your ZIP code to fill what we can.",
-      "questions": [
-        { "id": "address", "label": "Street address", "type": "text" },
-
-        {
-          "id": "city",
-          "label": "City",
-          "type": "lookup_select",
-          "lookup": {
-            "source": "lookups.geography_by_zip",
-            "match": { "field": "zip_code", "equals": "Zip Code" },
-            "return": "City"
-          },
-          "note": "If your ZIP connects to more than one city, pick the best match."
-        },
-        {
-          "id": "state",
-          "label": "State",
-          "type": "lookup",
-          "lookup": {
-            "source": "lookups.geography_by_zip",
-            "match": { "field": "zip_code", "equals": "Zip Code" },
-            "return": "State"
-          }
-        },
-        {
-          "id": "region",
-          "label": "Region",
-          "type": "lookup",
-          "lookup": {
-            "source": "lookups.geography_by_zip",
-            "match": { "field": "zip_code", "equals": "Zip Code" },
-            "return": "Region"
-          }
-        },
-        {
-          "id": "division",
-          "label": "Division",
-          "type": "lookup",
-          "lookup": {
-            "source": "lookups.geography_by_zip",
-            "match": { "field": "zip_code", "equals": "Zip Code" },
-            "return": "Division"
-          }
-        },
-
-        { "id": "email_address", "label": "Email address", "type": "email" },
-        { "id": "phone_number", "label": "Phone number", "type": "tel" }
-      ]
-    },
-    {
-      "id": "step_4_review_oath_confirmation",
-      "title": "Review, oath, then confirmation",
-      "intro": "Final stretch. Review your info, take the membership oath, then confirm to keep it moving.",
-      "questions": [
-        {
-          "id": "information_summary",
-          "label": "Review your information",
-          "type": "display"
-        },
-        {
-          "id": "membership_oath",
-          "label": "Membership oath",
-          "type": "oath",
-          "text": "I join the Damie Lee Burton Howard Family Reunion as family—connected by blood, marriage, partnership, upbringing, and love. I will honor our shared lineage and the purpose of the Reunion, strengthen unity, and protect the integrity of how we gather and decide. I will participate with respect and care, support steady stewardship from one generation to the next, and help keep the Reunion meaningful, organized, and worth coming home to. I understand membership is maintained through dues established in the Bylaws, and I accept shared responsibility in carrying our family forward."
-        },
-        {
-          "id": "confirmation",
-          "label": "Confirmation",
-          "type": "confirmation",
-          "text": "You’re almost there. By confirming below, you’re saying your information is accurate to the best of your knowledge—and you’ve taken the membership oath."
-        },
-        {
-          "id": "confirm_and_continue",
-          "label": "Confirm & continue",
-          "type": "action"
-        }
-      ]
-    },
-    {
-      "id": "step_5_tshirt_sizes",
-      "title": "T-shirt time",
-      "intro": "You made it. Now let’s get sizes—one shirt per person in your household.",
-      "question_groups": [
-        {
-          "id": "tshirt",
-          "label": "T-shirt",
-          "is_template": true,
-          "repeat_hint": "household_count",
-          "questions": [
-            {
-              "id": "tshirt_for",
-              "label": "Who is this shirt for?",
-              "type": "select",
-              "choices": [
-                "Household Member 1",
-                "Household Member 2",
-                "Household Member 3",
-                "Household Member 4",
-                "Household Member 5",
-                "Household Member 6",
-                "Household Member 7",
-                "Household Member 8",
-                "Household Member 9",
-                "Household Member 10"
-              ]
-            },
-            {
-              "id": "tshirt_size",
-              "label": "T-shirt size",
-              "type": "select",
-              "choices": [
-                "Youth XS",
-                "Youth S",
-                "Youth M",
-                "Youth L",
-                "Youth XL",
-                "Adult S",
-                "Adult M",
-                "Adult L",
-                "Adult XL",
-                "Adult 2XL",
-                "Adult 3XL",
-                "Adult 4XL"
-              ]
-            }
-          ]
-        }
-      ],
-      "questions": [
-        {
-          "id": "final_submit",
-          "label": "Finish & submit",
-          "type": "action"
-        }
-      ]
-    }
-  ]
+      {
+        "id": "step_2_household_members",
+        "repeat_by": "household_count",
+        "fields": ["title", "first_name", "middle_name", "last_name", "suffix", "date_of_birth", "relationship"]
+      },
+      {
+        "id": "step_3_contact_details",
+        "fields": ["address", "city", "state", "region", "division", "email_address", "phone_number"]
+      },
+      {
+        "id": "step_4_review_oath_confirmation",
+        "fields": ["information_summary", "membership_oath", "confirmation"]
+      },
+      {
+        "id": "step_5_tshirt_sizes",
+        "repeat_by": "household_count",
+        "fields": ["tshirt_for", "tshirt_size"]
+      }
+    ]
+  }
 }

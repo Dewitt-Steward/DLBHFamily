@@ -1,0 +1,43 @@
+name: Build geography.json
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/python/build_geography_json.py"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests
+
+      - name: Build geography.json
+        run: |
+          python src/python/build_geography_json.py
+
+      - name: Commit output (if changed)
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/geography.json
+            git commit -m "Update data/geography.json"
+            git push
+          else
+            echo "No changes to commit."
+          fi

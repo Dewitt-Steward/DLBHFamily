@@ -16,27 +16,78 @@ REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 OUT_DIR = os.path.join(REPO_ROOT, "data")
 OUT_PATH = os.path.join(OUT_DIR, "geography.json")
 
-# Census Region mapping (by state abbreviation)
-STATE_ABBR_TO_REGION = {
-    # Northeast
-    "CT": "Northeast", "ME": "Northeast", "MA": "Northeast", "NH": "Northeast",
-    "RI": "Northeast", "VT": "Northeast", "NJ": "Northeast", "NY": "Northeast", "PA": "Northeast",
+# ---------------------------------------------------------
+# Census Region + Division mapping by state abbreviation
+# ---------------------------------------------------------
+STATE_ABBR_TO_REGION_DIVISION = {
+    # NORTHEAST — New England
+    "CT": ("Northeast", "New England"),
+    "ME": ("Northeast", "New England"),
+    "MA": ("Northeast", "New England"),
+    "NH": ("Northeast", "New England"),
+    "RI": ("Northeast", "New England"),
+    "VT": ("Northeast", "New England"),
 
-    # Midwest
-    "IL": "Midwest", "IN": "Midwest", "MI": "Midwest", "OH": "Midwest", "WI": "Midwest",
-    "IA": "Midwest", "KS": "Midwest", "MN": "Midwest", "MO": "Midwest", "NE": "Midwest",
-    "ND": "Midwest", "SD": "Midwest",
+    # NORTHEAST — Middle Atlantic
+    "NJ": ("Northeast", "Middle Atlantic"),
+    "NY": ("Northeast", "Middle Atlantic"),
+    "PA": ("Northeast", "Middle Atlantic"),
 
-    # South
-    "DE": "South", "FL": "South", "GA": "South", "MD": "South", "NC": "South", "SC": "South",
-    "VA": "South", "WV": "South", "DC": "South",
-    "AL": "South", "KY": "South", "MS": "South", "TN": "South",
-    "AR": "South", "LA": "South", "OK": "South", "TX": "South",
+    # MIDWEST — East North Central
+    "IL": ("Midwest", "East North Central"),
+    "IN": ("Midwest", "East North Central"),
+    "MI": ("Midwest", "East North Central"),
+    "OH": ("Midwest", "East North Central"),
+    "WI": ("Midwest", "East North Central"),
 
-    # West
-    "AZ": "West", "CO": "West", "ID": "West", "MT": "West", "NV": "West", "NM": "West",
-    "UT": "West", "WY": "West",
-    "AK": "West", "CA": "West", "HI": "West", "OR": "West", "WA": "West",
+    # MIDWEST — West North Central
+    "IA": ("Midwest", "West North Central"),
+    "KS": ("Midwest", "West North Central"),
+    "MN": ("Midwest", "West North Central"),
+    "MO": ("Midwest", "West North Central"),
+    "NE": ("Midwest", "West North Central"),
+    "ND": ("Midwest", "West North Central"),
+    "SD": ("Midwest", "West North Central"),
+
+    # SOUTH — South Atlantic
+    "DE": ("South", "South Atlantic"),
+    "FL": ("South", "South Atlantic"),
+    "GA": ("South", "South Atlantic"),
+    "MD": ("South", "South Atlantic"),
+    "NC": ("South", "South Atlantic"),
+    "SC": ("South", "South Atlantic"),
+    "VA": ("South", "South Atlantic"),
+    "WV": ("South", "South Atlantic"),
+    "DC": ("South", "South Atlantic"),
+
+    # SOUTH — East South Central
+    "AL": ("South", "East South Central"),
+    "KY": ("South", "East South Central"),
+    "MS": ("South", "East South Central"),
+    "TN": ("South", "East South Central"),
+
+    # SOUTH — West South Central
+    "AR": ("South", "West South Central"),
+    "LA": ("South", "West South Central"),
+    "OK": ("South", "West South Central"),
+    "TX": ("South", "West South Central"),
+
+    # WEST — Mountain
+    "AZ": ("West", "Mountain"),
+    "CO": ("West", "Mountain"),
+    "ID": ("West", "Mountain"),
+    "MT": ("West", "Mountain"),
+    "NV": ("West", "Mountain"),
+    "NM": ("West", "Mountain"),
+    "UT": ("West", "Mountain"),
+    "WY": ("West", "Mountain"),
+
+    # WEST — Pacific
+    "AK": ("West", "Pacific"),
+    "CA": ("West", "Pacific"),
+    "HI": ("West", "Pacific"),
+    "OR": ("West", "Pacific"),
+    "WA": ("West", "Pacific"),
 }
 
 def fetch_text(url: str) -> str:
@@ -54,11 +105,11 @@ def build_geography(zip_csv_text: str):
         state = (row.get("state") or "").strip()
         abbr = (row.get("state_abbr") or "").strip().upper()
 
-        region = STATE_ABBR_TO_REGION.get(abbr, "")
+        region, division = STATE_ABBR_TO_REGION_DIVISION.get(abbr, ("", ""))
 
-        # only the 4 fields you asked for
         out.append({
             "Region": region,
+            "Division": division,
             "State": state,
             "City": city,
             "Zip Code": zip_code
@@ -67,7 +118,6 @@ def build_geography(zip_csv_text: str):
     return out
 
 def build_unique_area_codes(area_code_csv_text: str):
-    # file has rows like: 201,Bayonne,"New Jersey",US,...
     reader = csv.reader(io.StringIO(area_code_csv_text))
     unique = set()
 

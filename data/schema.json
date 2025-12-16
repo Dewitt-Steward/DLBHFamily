@@ -41,12 +41,12 @@
 
   "fields": [
     { "id": "title", "label": "Title", "type": "select", "options_dataset": "title_options" },
+
     { "id": "first_name", "label": "First Name", "type": "text" },
     { "id": "last_name", "label": "Last Name", "type": "text" },
     { "id": "date_of_birth", "label": "Date of Birth", "type": "date" },
 
     { "id": "address", "label": "Address", "type": "text" },
-
     { "id": "zip_code", "label": "Zip Code", "type": "text" },
 
     { "id": "city", "label": "City", "type": "text", "readonly": true },
@@ -74,6 +74,73 @@
       "options_lookup": "family_collection",
       "options_dataset": "tshirt_prices",
       "readonly": true
+    },
+
+    { "id": "dep_first_name", "label": "Dependent First Name", "type": "text" },
+    { "id": "dep_last_name", "label": "Dependent Last Name", "type": "text" },
+    { "id": "dep_date_of_birth", "label": "Dependent Date of Birth", "type": "date" },
+    {
+      "id": "dep_relationship",
+      "label": "Dependent Relationship",
+      "type": "select",
+      "options_dataset": "relationship_options"
+    },
+    {
+      "id": "dep_tshirt_size",
+      "label": "Dependent T-Shirt Size",
+      "type": "select",
+      "options_lookup": "family_collection",
+      "options_dataset": "tshirt_sizes"
+    },
+    {
+      "id": "dep_tshirt_price",
+      "label": "Dependent T-Shirt Price",
+      "type": "select",
+      "options_lookup": "family_collection",
+      "options_dataset": "tshirt_prices",
+      "readonly": true
     }
-  ]
+  ],
+
+  "forms": {
+    "enrollment": {
+      "fieldsets": [
+        {
+          "legend": "Household Location",
+          "fields": ["zip_code", "address", "city", "state", "region", "division"]
+        },
+        {
+          "legend": "Primary Member",
+          "fields": [
+            "title",
+            "first_name",
+            "last_name",
+            "date_of_birth",
+            "email",
+            "phone",
+            "relationship",
+            "food_allergy"
+          ]
+        },
+        {
+          "legend": "Dependents",
+          "repeatable": true,
+          "group_key": "dependents",
+          "min_items": 1,
+          "max_items": 10,
+          "add_button_label": "+ Add Another Dependent",
+          "remove_button_label": "Remove Dependent",
+          "item_legend_template": "Dependent {n}",
+          "fields": [
+            "dep_first_name",
+            "dep_last_name",
+            "dep_date_of_birth",
+            "dep_relationship",
+            "dep_tshirt_size",
+            "dep_tshirt_price"
+          ]
+        }
+      ]
+    }
+  }
 }

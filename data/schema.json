@@ -73,6 +73,7 @@
       "type": "select",
       "options_lookup": "family_collection",
       "options_dataset": "tshirt_prices",
+      "readonly": true
     },
 
     { "id": "dep_first_name", "label": "Dependent First Name", "type": "text" },

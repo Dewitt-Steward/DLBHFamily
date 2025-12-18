@@ -3,8 +3,44 @@
   --module-surface:rgb(235,235,248);
   --module-ink:#000;
   --module-border:#000;
-  font-family:Arial,Helvetica,sans-serif;
+
+  --module-font:Arial,Helvetica,sans-serif;
+
+  --module-fs-11:11px;
+  --module-fs-12:12px;
+  --module-fs-14:14px;
+  --module-fs-16:16px;
+  --module-fs-26:26px;
+
+  --module-lh-1:1;
+  --module-lh-tight:1.1;
+  --module-lh-small:1.25;
+  --module-lh-body:1.55;
+
+  --module-w-800:800;
+  --module-w-900:900;
+
+  --module-tracking-kicker:.06em;
+  --module-tracking-cap:.03em;
+  --module-tracking-head:.02em;
+
+  --module-space-6:6px;
+  --module-space-8:8px;
+  --module-space-10:10px;
+  --module-space-12:12px;
+  --module-space-14:14px;
+  --module-space-18:18px;
+  --module-space-22:22px;
+  --module-space-44:44px;
+
+  --module-max:980px;
+  --module-pill:999px;
+
+  font-family:var(--module-font);
   color:var(--module-ink);
+  max-width:var(--module-max);
+  margin:0 auto;
+  box-sizing:border-box;
 }
 
 [data-module-root] .shell{
@@ -31,9 +67,7 @@
   padding-bottom:10px;
 }
 
-[data-module-root] .scroll table{
-  max-width:none;
-}
+[data-module-root] .scroll table{max-width:none;}
 
 [data-module-root] .btnrow{
   display:flex;
@@ -43,13 +77,14 @@
 }
 
 [data-module-root] .btn{
-  border-radius:999px;
+  border-radius:var(--module-pill);
   padding:10px 18px;
-  font-weight:800;
+  font-weight:var(--module-w-800);
   cursor:pointer;
   text-decoration:none;
   display:inline-block;
   border:2px solid var(--module-accent);
+  background:transparent;
 }
 
 [data-module-root] .btn--primary{
@@ -65,7 +100,7 @@
 
 [data-module-root] .progress-track{
   border:1px solid var(--module-accent);
-  border-radius:999px;
+  border-radius:var(--module-pill);
   overflow:hidden;
   height:10px;
   background:var(--module-surface);
@@ -78,6 +113,140 @@
   background:var(--module-accent);
   transition:width .25s ease;
 }
+
+[data-module-root] [data-label]{
+  font-size:var(--module-fs-14);
+  line-height:var(--module-lh-body);
+  margin:0 0 var(--module-space-8) 0;
+}
+
+[data-module-root] .header{
+  display:grid;
+  grid-template-columns:20% 55% 25%;
+  width:100%;
+  margin:0 0 var(--module-space-10) 0;
+}
+
+[data-module-root] .header__cell{
+  border:1px solid var(--module-border);
+  background:var(--module-surface);
+  padding:6px 8px;
+  min-height:74px;
+  box-sizing:border-box;
+}
+
+[data-module-root] .header__kicker{
+  display:block;
+  font-weight:var(--module-w-800);
+  font-size:var(--module-fs-11);
+  letter-spacing:var(--module-tracking-kicker);
+  text-transform:uppercase;
+  margin:0 0 6px 0;
+}
+
+[data-module-root] .header__big{
+  display:block;
+  font-weight:var(--module-w-900);
+  font-size:var(--module-fs-26);
+  line-height:var(--module-lh-1);
+  margin:0;
+}
+
+[data-module-root] .header__mid{
+  display:block;
+  font-weight:var(--module-w-900);
+  font-size:var(--module-fs-16);
+  line-height:var(--module-lh-tight);
+  margin:2px 0 0 0;
+}
+
+[data-module-root] .header__sm{
+  display:block;
+  font-size:var(--module-fs-12);
+  line-height:var(--module-lh-small);
+  margin:6px 0 0 0;
+}
+
+[data-module-root] .grid{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+[data-module-root] .cell{
+  border:1px solid var(--module-border);
+  vertical-align:top;
+  padding:8px 10px;
+  background:var(--module-surface);
+}
+
+[data-module-root] .cap{
+  display:block;
+  font-weight:var(--module-w-800);
+  font-size:var(--module-fs-12);
+  letter-spacing:var(--module-tracking-cap);
+  text-transform:uppercase;
+  margin:0 0 6px 0;
+}
+
+[data-module-root] .cap--nowrap{white-space:nowrap;}
+
+[data-module-root] .field{
+  width:100%;
+  box-sizing:border-box;
+  border:0;
+  background:transparent;
+  padding:6px 4px;
+  font-size:var(--module-fs-14);
+  outline:none;
+}
+
+[data-module-root] .field--display{
+  color:var(--module-ink);
+  opacity:1;
+}
+
+[data-module-root] .field--zip{max-width:220px;}
+
+[data-module-root] .section-head{
+  font-weight:var(--module-w-900);
+  font-size:14px;
+  letter-spacing:var(--module-tracking-head);
+  margin:12px 0 6px 0;
+}
+
+[data-module-root] .confirm-panel{
+  position:relative;
+  padding-bottom:var(--module-space-44);
+}
+
+[data-module-root] .confirm-corner{
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  font-size:var(--module-fs-12);
+  opacity:.85;
+  line-height:1.25;
+  text-align:right;
+}
+
+[data-module-root] .help{
+  font-size:var(--module-fs-14);
+  line-height:var(--module-lh-body);
+  margin:0;
+}
+
+[data-module-root] .subtle{
+  font-size:var(--module-fs-12);
+  line-height:1.45;
+  margin:8px 0 0 0;
+  opacity:.92;
+}
+
+[data-module-root] .spacer{height:var(--module-space-14);}
+[data-module-root] .mb-12{margin-bottom:var(--module-space-12);}
+[data-module-root] .mb-10{margin-bottom:var(--module-space-10);}
+[data-module-root] .mt-12{margin-top:var(--module-space-12);}
 
 [data-module-root] input,
 [data-module-root] select,
@@ -118,9 +287,7 @@
   transition:background-color 99999s ease-in-out 0s !important;
 }
 
-[data-module-root] *{
-  -webkit-tap-highlight-color:transparent !important;
-}
+[data-module-root] *{-webkit-tap-highlight-color:transparent !important;}
 
 [data-module-root] td:focus-within,
 [data-module-root] th:focus-within{
@@ -129,26 +296,11 @@
   background:var(--module-surface) !important;
 }
 
-[data-module-root] ::selection{
-  background:transparent !important;
-}
+[data-module-root] ::selection{background:transparent !important;}
 
 [data-module-root] .grid tr:hover td,
 [data-module-root] .table tr:hover td{
   background:var(--module-surface) !important;
-}
-
-[data-module-root] .help{
-  font-size:14px;
-  line-height:1.55;
-  margin:0;
-}
-
-[data-module-root] .subtle{
-  font-size:12px;
-  line-height:1.45;
-  margin:8px 0 0 0;
-  opacity:.92;
 }
 
 @media (max-width:720px){
@@ -156,19 +308,9 @@
     padding:0 12px;
     box-sizing:border-box;
   }
-  [data-module-root] .shell{
-    padding:10px;
-  }
-  [data-module-root] [data-label]{
-    font-size:16px;
-  }
-  [data-module-root] .header,
-  [data-module-root] .header tbody,
-  [data-module-root] .header tr,
-  [data-module-root] .header td{
-    display:block;
-    width:100%;
-  }
+  [data-module-root] .shell{padding:10px;}
+  [data-module-root] [data-label]{font-size:16px;}
+  [data-module-root] .header{grid-template-columns:1fr;}
   [data-module-root] .grid,
   [data-module-root] .grid tbody,
   [data-module-root] .grid tr,
@@ -176,7 +318,5 @@
     display:block;
     width:100%;
   }
-  [data-module-root] .grid td{
-    padding:10px;
-  }
+  [data-module-root] .grid td{padding:10px;}
 }

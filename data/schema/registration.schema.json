@@ -1,0 +1,534 @@
+{
+  "wizard_id": "dlbh_1040_ux",
+  "version": "1.0.0",
+  "branding": {
+    "color_scheme": "deep-blue",
+    "css_asset": {
+      "type": "external",
+      "path": "assets/css/dlbh-ttx-wizard.css"
+    }
+  },
+  "experience_notes": {
+    "voice": "Calm, guided, and reassuring—like a supportive helper who keeps things moving without pressure.",
+    "principles": [
+      "Lead with the outcome people care about (being successfully registered and ready for reunion activities).",
+      "Keep focus on one question set at a time to prevent overwhelm.",
+      "Set expectations and show progress so users feel momentum.",
+      "Use contextual help only where it reduces confusion (optional, easy to ignore).",
+      "Celebrate completion and clearly explain what happens next."
+    ]
+  },
+  "data_model": {
+    "household": {
+      "primary_email": "string",
+      "phone_number": "string",
+      "address": {
+        "street": "string",
+        "city": "string",
+        "state": "string",
+        "region": "string",
+        "division": "string",
+        "zip_code": "string"
+      },
+      "members": "array<Member>"
+    },
+    "member": {
+      "title": "string",
+      "first_name": "string",
+      "middle_name": "string",
+      "last_name": "string",
+      "suffix": "string",
+      "date_of_birth": "date",
+      "gender": "string",
+      "military_status": "string",
+      "food_allergies": "string",
+      "tshirt_size": "string"
+    },
+    "submission": {
+      "submission_id": "string",
+      "submitted_at": "datetime",
+      "family_id": "string"
+    }
+  },
+  "computed_values": [
+    {
+      "id": "family_id",
+      "label": "Family ID",
+      "type": "string",
+      "rule": "family_id = 'DLBH-' + last5(submission_id)",
+      "display_example": "DLBH-12345"
+    },
+    {
+      "id": "region_division_from_zip",
+      "label": "Region + Division (from ZIP)",
+      "type": "lookup",
+      "rule": "region, division derived from ZIP when possible; allow manual override"
+    }
+  ],
+  "steps": [
+    {
+      "index": 0,
+      "key": "start",
+      "title": "Let’s get your household registered",
+      "description": "We’ll build your household profile step-by-step. You’ll confirm details, take an oath, then receive your Family ID.",
+      "notes": "Open with purpose and confidence. Make the first screen feel easy and fast.",
+      "sections": [
+        {
+          "title": "Start here",
+          "fields": [
+            {
+              "id": "primary_email",
+              "label": "Email Address",
+              "type": "email",
+              "required": true,
+              "placeholder": "name@example.com",
+              "helperText": "We’ll send confirmations and your Family ID here."
+            },
+            {
+              "id": "phone_number",
+              "label": "Phone Number",
+              "type": "tel",
+              "required": true,
+              "placeholder": "(###) ###-####",
+              "helperText": "Used only for important updates and coordination."
+            },
+            {
+              "id": "zip_code",
+              "label": "Zip Code",
+              "type": "text",
+              "required": true,
+              "inputMode": "numeric",
+              "placeholder": "#####",
+              "validation": {
+                "pattern": "^[0-9]{5}$",
+                "message": "Enter a 5-digit ZIP code."
+              },
+              "helperText": "Helps us group households by location for planning."
+            }
+          ],
+          "help": {
+            "label": "Why do we ask?",
+            "content": "Email confirms your registration. ZIP helps with planning, communication, and regional coordination."
+          }
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "key": "address",
+      "title": "Household address",
+      "description": "Add the household address we should associate with this registration.",
+      "notes": "Keep the layout clean and familiar. Don’t ask for extra details beyond what’s needed.",
+      "sections": [
+        {
+          "title": "Address",
+          "fields": [
+            {
+              "id": "street",
+              "label": "Address",
+              "type": "text",
+              "required": true,
+              "placeholder": "123 Main St"
+            },
+            {
+              "id": "city",
+              "label": "City",
+              "type": "text",
+              "required": true,
+              "placeholder": "City"
+            },
+            {
+              "id": "state",
+              "label": "State",
+              "type": "text",
+              "required": true,
+              "placeholder": "ST",
+              "validation": {
+                "pattern": "^[A-Za-z]{2}$",
+                "message": "Use the 2-letter state code (e.g., NE)."
+              }
+            },
+            {
+              "id": "zip_code_confirm",
+              "label": "Zip Code",
+              "type": "text",
+              "required": true,
+              "inputMode": "numeric",
+              "placeholder": "#####",
+              "validation": {
+                "pattern": "^[0-9]{5}$",
+                "message": "Enter a 5-digit ZIP code."
+              }
+            },
+            {
+              "id": "region",
+              "label": "Region",
+              "type": "text",
+              "required": true,
+              "readOnlyPreferred": true,
+              "placeholder": "Auto-filled when possible",
+              "helperText": "Typically filled from ZIP; you can adjust if needed."
+            },
+            {
+              "id": "division",
+              "label": "Division",
+              "type": "text",
+              "required": true,
+              "readOnlyPreferred": true,
+              "placeholder": "Auto-filled when possible",
+              "helperText": "Typically filled from ZIP; you can adjust if needed."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "key": "members_primary",
+      "title": "Primary member",
+      "description": "Start with the primary member for this household. You’ll add the rest next.",
+      "notes": "Personalize the flow by acknowledging progress and keeping questions simple and human.",
+      "sections": [
+        {
+          "title": "Primary member details",
+          "fields": [
+            {
+              "id": "primary_member",
+              "label": "Primary Member",
+              "type": "group",
+              "required": true,
+              "fields": [
+                {
+                  "id": "title",
+                  "label": "Title",
+                  "type": "select",
+                  "required": false,
+                  "options": ["Mr.", "Mrs.", "Ms.", "Miss", "Dr.", "Rev.", "Other"]
+                },
+                {
+                  "id": "first_name",
+                  "label": "First Name",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "middle_name",
+                  "label": "Middle Name",
+                  "type": "text",
+                  "required": false
+                },
+                {
+                  "id": "last_name",
+                  "label": "Last Name",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "suffix",
+                  "label": "Suffix",
+                  "type": "select",
+                  "required": false,
+                  "options": ["", "Jr.", "Sr.", "II", "III", "IV", "V", "Other"]
+                },
+                {
+                  "id": "date_of_birth",
+                  "label": "Date of Birth",
+                  "type": "date",
+                  "required": true
+                },
+                {
+                  "id": "gender",
+                  "label": "Gender",
+                  "type": "select",
+                  "required": true,
+                  "options": ["Female", "Male", "Non-binary", "Prefer not to say", "Self-describe"]
+                },
+                {
+                  "id": "military_status",
+                  "label": "Military Status",
+                  "type": "select",
+                  "required": true,
+                  "options": ["Not applicable", "Active Duty", "Reserve", "National Guard", "Veteran", "Prefer not to say"]
+                },
+                {
+                  "id": "food_allergies",
+                  "label": "Food Allergies",
+                  "type": "textarea",
+                  "required": false,
+                  "placeholder": "List any allergies (comma-separated)",
+                  "helperText": "Example: peanuts, shellfish, dairy"
+                },
+                {
+                  "id": "tshirt_size",
+                  "label": "T-Shirt Size",
+                  "type": "select",
+                  "required": true,
+                  "options": ["YS", "YM", "YL", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "key": "members_household",
+      "title": "Household members",
+      "description": "Add everyone included in this household registration—one by one.",
+      "notes": "Make adding members feel lightweight. Encourage completion without making it feel endless.",
+      "sections": [
+        {
+          "title": "Members list",
+          "fields": [
+            {
+              "id": "members",
+              "label": "Household Members",
+              "type": "repeater",
+              "required": false,
+              "min_items": 0,
+              "add_button_label": "+ Add household member",
+              "item_label_template": "{first_name} {last_name}",
+              "fields": [
+                {
+                  "id": "title",
+                  "label": "Title",
+                  "type": "select",
+                  "required": false,
+                  "options": ["Mr.", "Mrs.", "Ms.", "Miss", "Dr.", "Rev.", "Other"]
+                },
+                {
+                  "id": "first_name",
+                  "label": "First Name",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "middle_name",
+                  "label": "Middle Name",
+                  "type": "text",
+                  "required": false
+                },
+                {
+                  "id": "last_name",
+                  "label": "Last Name",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "suffix",
+                  "label": "Suffix",
+                  "type": "select",
+                  "required": false,
+                  "options": ["", "Jr.", "Sr.", "II", "III", "IV", "V", "Other"]
+                },
+                {
+                  "id": "date_of_birth",
+                  "label": "Date of Birth",
+                  "type": "date",
+                  "required": true
+                },
+                {
+                  "id": "gender",
+                  "label": "Gender",
+                  "type": "select",
+                  "required": true,
+                  "options": ["Female", "Male", "Non-binary", "Prefer not to say", "Self-describe"]
+                },
+                {
+                  "id": "military_status",
+                  "label": "Military Status",
+                  "type": "select",
+                  "required": true,
+                  "options": ["Not applicable", "Active Duty", "Reserve", "National Guard", "Veteran", "Prefer not to say"]
+                },
+                {
+                  "id": "food_allergies",
+                  "label": "Food Allergies",
+                  "type": "textarea",
+                  "required": false,
+                  "placeholder": "List any allergies (comma-separated)"
+                },
+                {
+                  "id": "tshirt_size",
+                  "label": "T-Shirt Size",
+                  "type": "select",
+                  "required": true,
+                  "options": ["YS", "YM", "YL", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"]
+                }
+              ]
+            }
+          ],
+          "help": {
+            "label": "Tip",
+            "content": "If someone is unsure of a shirt size, you can come back and update it later."
+          }
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "key": "review",
+      "title": "Review your registration",
+      "description": "Take a quick look to make sure everything is accurate before you certify and transmit.",
+      "notes": "This is the calming checkpoint: summarize clearly, highlight what’s missing, and keep edits easy.",
+      "sections": [
+        {
+          "title": "What we have so far",
+          "fields": [
+            {
+              "id": "review_summary",
+              "label": "Summary",
+              "type": "summary",
+              "required": false,
+              "includes": [
+                "primary_email",
+                "phone_number",
+                "address.street",
+                "address.city",
+                "address.state",
+                "address.region",
+                "address.division",
+                "address.zip_code",
+                "primary_member",
+                "members"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "key": "ready_to_certify",
+      "title": "Before you certify",
+      "description": "Here’s what happens next: you’ll certify the information, transmit it to the Planning Committee, and receive your Family ID.",
+      "notes": "Set expectations and remove anxiety. Keep it official, but warm and straightforward.",
+      "sections": [
+        {
+          "title": "What to expect",
+          "fields": [
+            {
+              "id": "expectations",
+              "label": "Expectations",
+              "type": "content",
+              "content": [
+                "You’ll certify that your information is accurate to the best of your knowledge.",
+                "Your registration will be transmitted to the Planning Committee for recordkeeping and coordination.",
+                "You’ll receive a confirmation screen with your Family ID for dues, activities, and member access."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "key": "oath_transmit",
+      "title": "Oath and transmission",
+      "description": "Review, certify, and transmit your registration to the Planning Committee.",
+      "notes": "This is the serious moment—use clear language, visible confirmation, and a confident ‘Transmit’ action.",
+      "sections": [
+        {
+          "title": "Oath",
+          "fields": [
+            {
+              "id": "oath_text",
+              "label": "Oath",
+              "type": "content",
+              "content": [
+                "I certify that the information in this household registration is true, accurate, and complete to the best of my knowledge and belief.",
+                "I understand this information will be used to administer membership, planning, and dues coordination for the Reunion."
+              ]
+            },
+            {
+              "id": "oath_full_name",
+              "label": "Type your full name to certify",
+              "type": "text",
+              "required": true,
+              "placeholder": "Full name"
+            },
+            {
+              "id": "oath_acknowledge",
+              "label": "I understand and certify",
+              "type": "checkbox",
+              "required": true
+            },
+            {
+              "id": "transmit_action",
+              "label": "Transmit to Planning Committee",
+              "type": "action",
+              "required": true,
+              "action_key": "submit_registration",
+              "button_style": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "key": "confirmation",
+      "title": "Confirmation",
+      "description": "Your household registration has been received.",
+      "notes": "Celebrate completion and make the Family ID impossible to miss. Provide clear next steps.",
+      "sections": [
+        {
+          "title": "Your Family ID",
+          "fields": [
+            {
+              "id": "family_id_display",
+              "label": "Family ID",
+              "type": "computed_display",
+              "computed_id": "family_id",
+              "emphasis": "high"
+            },
+            {
+              "id": "submission_receipt",
+              "label": "Receipt",
+              "type": "computed_display_group",
+              "fields": [
+                { "id": "submission_id", "label": "Submission ID", "type": "computed_display" },
+                { "id": "submitted_at", "label": "Date/Time", "type": "computed_display" }
+              ]
+            },
+            {
+              "id": "next_steps",
+              "label": "Next steps",
+              "type": "content",
+              "content": [
+                "Use your Family ID for dues, activities sign-ups, and future updates.",
+                "Keep an eye on your email for your confirmation copy and any follow-up instructions."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "key": "payment",
+      "title": "Dues payment",
+      "description": "Choose a payment option to complete dues for your household.",
+      "notes": "Keep payment simple and confidence-building. One clear choice at a time; reduce distractions.",
+      "sections": [
+        {
+          "title": "Payment",
+          "fields": [
+            {
+              "id": "payment_component",
+              "label": "Payment",
+              "type": "embed",
+              "provider": "stripe",
+              "embed_type": "pricing_table",
+              "placeholder": {
+                "pricing_table_id": "PRICING_TABLE_ID_HERE",
+                "publishable_key": "PUBLISHABLE_KEY_HERE"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

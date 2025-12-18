@@ -1,5 +1,4 @@
- <style>
-      :root{
+:root{
         --dlbh-primary:#01016E;   /* main */
         --dlbh-surface:#EBEBF8;   /* light */
         --dlbh-deep:#020046;
@@ -391,4 +390,3 @@
         .dlbh-ttx__grid--3{grid-template-columns:1fr;}
         .dlbh-ttx__grid--4{grid-template-columns:1fr;}
       }
-    </style>

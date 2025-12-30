@@ -1,28 +1,188 @@
 {
-  "schema": {
-    "form_id": "schema",
+  "membership_enrollment": {
     "steps": [
       {
-        "id": "step_1_household_basics",
-        "fields": ["zip_code", "household_count"]
+        "step": 1,
+        "title": "Zip Code of Residence",
+        "questions": [
+          {
+            "id": "zip",
+            "label": "What is your ZIP Code of residence?",
+            "type": "text",
+            "constraints": {
+              "max_length": 5,
+              "format": "numeric"
+            }
+          }
+        ]
       },
       {
-        "id": "step_2_household_members",
-        "repeat_by": "household_count",
-        "fields": ["title", "first_name", "middle_name", "last_name", "suffix", "date_of_birth", "relationship"]
+        "step": 2,
+        "title": "Contact Information",
+        "questions": [
+          {
+            "id": "address",
+            "label": "What is your street address?",
+            "type": "text"
+          },
+          {
+            "id": "city",
+            "label": "What city do you live in?",
+            "type": "text"
+          },
+          {
+            "id": "state",
+            "label": "What state do you live in?",
+            "type": "text"
+          },
+          {
+            "id": "zip2",
+            "label": "What is your ZIP Code?",
+            "type": "text",
+            "constraints": {
+              "max_length": 5,
+              "format": "numeric"
+            }
+          },
+          {
+            "id": "region",
+            "label": "What region do you live in?",
+            "type": "text"
+          },
+          {
+            "id": "division",
+            "label": "What division do you live in?",
+            "type": "text"
+          },
+          {
+            "id": "email",
+            "label": "What is your email address?",
+            "type": "email"
+          },
+          {
+            "id": "phone",
+            "label": "What is your phone number?",
+            "type": "text"
+          },
+          {
+            "id": "contact_method",
+            "label": "What is your preferred method of contact?",
+            "type": "select",
+            "options": [
+              "Email",
+              "Phone",
+              "Text"
+            ]
+          }
+        ]
       },
       {
-        "id": "step_3_contact_details",
-        "fields": ["address", "city", "state", "region", "division", "email_address", "phone_number"]
+        "step": 3,
+        "title": "Personal / Household Information",
+        "repeatable": true,
+        "questions": [
+          {
+            "id": "relationship",
+            "label": "What is this person’s relationship to the household?",
+            "type": "select",
+            "options": [
+              "Self",
+              "Spouse / Partner",
+              "Dependent"
+            ],
+            "rules": {
+              "first_record_must_be": "Self",
+              "only_one_spouse_allowed": true
+            }
+          },
+          {
+            "id": "first_name",
+            "label": "First Name",
+            "type": "text"
+          },
+          {
+            "id": "last_name",
+            "label": "Last Name",
+            "type": "text"
+          },
+          {
+            "id": "dob",
+            "label": "Date of Birth",
+            "type": "date"
+          },
+          {
+            "id": "allergies",
+            "label": "Does this person have allergies?",
+            "type": "select",
+            "options": [
+              "No",
+              "Yes"
+            ]
+          },
+          {
+            "id": "military",
+            "label": "What is this person’s military status?",
+            "type": "select",
+            "options": [
+              "None",
+              "Active Duty",
+              "Veteran",
+              "Retired"
+            ]
+          },
+          {
+            "id": "shirt",
+            "label": "T-Shirt Size",
+            "type": "select",
+            "options": [
+              "S",
+              "M",
+              "L",
+              "XL",
+              "2XL",
+              "3XL"
+            ]
+          }
+        ],
+        "actions": [
+          "Add Person",
+          "Delete Person"
+        ]
       },
       {
-        "id": "step_4_review_oath_confirmation",
-        "fields": ["information_summary", "membership_oath", "confirmation"]
+        "step": 4,
+        "title": "Order Summary",
+        "type": "review_only",
+        "content": [
+          "Contact Information Summary",
+          "Household Member Table",
+          "Cart Line Items",
+          "Subtotal",
+          "Discounts",
+          "Order Total",
+          "Monthly Dues"
+        ]
       },
       {
-        "id": "step_5_tshirt_sizes",
-        "repeat_by": "household_count",
-        "fields": ["tshirt_for", "tshirt_size"]
+        "step": 5,
+        "title": "Checkout Review",
+        "type": "review_only",
+        "content": [
+          "Full Order Summary (duplicated)"
+        ]
+      },
+      {
+        "step": 6,
+        "title": "Confirmation",
+        "type": "informational",
+        "message": "You are ready to pay your household dues."
+      },
+      {
+        "step": 7,
+        "title": "Family Dues Payment",
+        "type": "payment",
+        "provider": "Stripe",
+        "action": "Complete household dues payment"
       }
     ]
   }

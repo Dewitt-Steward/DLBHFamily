@@ -44,16 +44,7 @@
               "format": "numeric"
             }
           },
-          {
-            "id": "region",
-            "label": "What region do you live in?",
-            "type": "text"
-          },
-          {
-            "id": "division",
-            "label": "What division do you live in?",
-            "type": "text"
-          },
+          
           {
             "id": "email",
             "label": "What is your email address?",

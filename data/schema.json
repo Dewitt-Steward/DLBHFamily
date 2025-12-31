@@ -154,14 +154,15 @@
           "Monthly Dues"
         ]
       },
-      {
-        "step": 5,
-        "title": "Checkout Review",
-        "type": "review_only",
-        "content": [
-          "Full Order Summary (duplicated)"
-        ]
-      },
+{
+  "step": 5,
+  "title": "Checkout Review",
+  "acknowledgment_step": true,
+  "type": "review_only",
+  "content": [
+    "Full Order Summary (duplicated)"
+  ]
+},
       {
         "step": 6,
         "title": "Confirmation",
